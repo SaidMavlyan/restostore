@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Delete User</h2>
+<mat-dialog-content>
+  <div *ngIf="isDeletingSelf else otherUser" class="color-warn">
+    Are you sure you want to delete your account?
+  </div>
+  <ng-template #otherUser>
+    Are you sure you want to delete user account for <strong>{{data.user.email}}</strong>?
+  </ng-template>
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center">
+  <button class="mat-raised-button" (click)="close()">
+    Close
+  </button>
+
+  <button class="mat-raised-button mat-warn" (click)="delete()">
+    Delete
+  </button>
+</mat-dialog-actions>

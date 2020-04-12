@@ -1,1 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f4f4f4;
+}
+
+ngx-material-timepicker-container {
+  .timepicker-overlay {
+    z-index: 2000 !important;
+  }
+}
+
+.color-warn {
+  color: red;
+}
+
+table.mat-table {
+  width: 100%;
+
+  td, th {
+    padding-left: 20px;
+  }
+
+  th.mat-header-cell:last-of-type,
+  td.mat-cell:last-of-type {
+    text-align: right;
+  }
+}

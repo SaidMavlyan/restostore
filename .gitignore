@@ -4,11 +4,16 @@
 /dist
 /tmp
 /out-tsc
+
+## Compiled JavaScript files
+**/*.js
+**/*.js.map
+
 # Only exists if Bazel was run
 /bazel-out
 
 # dependencies
-/node_modules
+**/node_modules
 
 # profiling files
 chrome-profiler-events*.json
@@ -18,6 +23,7 @@ speed-measure-plugin*.json
 /.idea
 .project
 .classpath
+/.firebase
 .c9/
 *.launch
 .settings/
@@ -39,7 +45,10 @@ speed-measure-plugin*.json
 npm-debug.log
 yarn-error.log
 testem.log
+**/firestore-debug.log
+**/firebase-debug.log
 /typings
+firebase-service-key.private.json
 
 # System Files
 .DS_Store

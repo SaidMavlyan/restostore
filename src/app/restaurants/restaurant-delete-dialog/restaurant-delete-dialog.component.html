@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Delete Restaurant</h2>
+<mat-dialog-content>
+  Are you sure you want to delete this entry: <strong>{{restaurant.description}}</strong>?
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center">
+  <button class="mat-raised-button" (click)="close()">
+    Close
+  </button>
+
+  <button class="mat-raised-button mat-warn" (click)="delete()">
+    Delete
+  </button>
+</mat-dialog-actions>

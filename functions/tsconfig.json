@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "es2015",
+    "module": "commonjs",
+    "outDir": "lib",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ]
+  },
+  "compileOnSave": true,
+  "exclude": [
+    "**/*.spec.ts"
+  ],
+  "include": [
+    "src"
+  ]
+}

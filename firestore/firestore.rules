@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  function isAdmin() {
+    return isAuthenticated() && request.auth.token.role == 'admin';
+  }
+
+  function isAuthenticated() {
+    return request.auth.uid != null;
+  }
+
+  function createBySelf() {
+    return request.auth.uid == request.resource.data.uid;
+  }
+
+  function readBySelf() {
+    return request.auth.uid == resource.data.uid;
+  }
+
+  function updateBySelf() {
+    return request.auth.uid == resource.data.uid && resource.data.uid == request.resource.data.uid;
+  }
+
+  function deleteBySelf() {
+    return request.auth.uid == resource.data.uid;
+  }
+
+  match /databases/{database}/documents {
+
+    match /users/{uid} {
+      allow read, write: if request.auth.uid == uid;
+    }
+
+    //match /restaurants/{restaurantId} {
+    //  allow create: if createBySelf() || isAdmin();
+    //  allow read: if readBySelf() || isAdmin();
+    //  allow update: if updateBySelf() || isAdmin();
+    //  allow delete: if deleteBySelf() || isAdmin();
+    //}
+
+    match /restaurants/{restaurant} {
+      match /ratings/{rating} {
+        allow read: if request.auth != null;
+        allow write: if request.auth.uid == request.resource.data.userId;
+      }
+
+      allow read;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null
+                    && request.resource.data.name == resource.data.name
+                    && request.resource.data.city == resource.data.city
+                    && request.resource.data.price == resource.data.price
+                    && request.resource.data.category == resource.data.category;
+    }
+  }
+}

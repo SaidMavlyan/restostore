@@ -1,0 +1,34 @@
+<app-page-title title="Settings"></app-page-title>
+
+<div *ngIf="userService.currentUser$ | async as currentUser">
+  <mat-card>
+    <mat-card-header fxLayout="column"
+                     fxLayoutAlign="center center"
+                     fxLayoutGap="10px">
+      <mat-card-title>{{currentUser?.displayName}}</mat-card-title>
+      <mat-chip-list>
+        <mat-chip>
+          {{currentUser?.role?.toUpperCase()}}
+        </mat-chip>
+      </mat-chip-list>
+    </mat-card-header>
+    <mat-card-content fxLayout="column"
+                      fxLayoutAlign="center center"
+                      fxLayoutGap="10px">
+      <span>{{currentUser?.email}}</span>
+    </mat-card-content>
+    <mat-card-actions dir="rtl">
+      <button mat-button color="primary" (click)="edit(currentUser)">
+        Edit Profile
+      </button>
+
+      <button (click)="resetPassword(currentUser)" color="primary" mat-button>
+        Reset Password
+      </button>
+
+      <button class="mat-raised-button mat-warn" (click)="delete(currentUser)">
+        Delete
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

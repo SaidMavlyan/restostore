@@ -1,0 +1,25 @@
+<app-page-title title="Restaurant">
+  <button mat-fab title="Add restaurant" color="accent" (click)="addRestaurant()">
+    <mat-icon>add</mat-icon>
+  </button>
+</app-page-title>
+
+<div fxLayout="row wrap" fxLayoutAlign="space-evenly center">
+  <ng-container *ngFor="let restaurant of restaurantsByRating">
+    <div fxFlex="33" fxFlex.lt-md="50" fxFlex.xs="100">
+      <a routerLink="/restaurants/{{restaurant.id}}">
+        <mat-card>
+          <img mat-card-image [src]="restaurant.photo">
+          <mat-card-content>
+            <div>
+              <div class="details">
+                <h2>{{restaurant.name}}</h2>
+                <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </a>
+    </div>
+  </ng-container>
+</div>

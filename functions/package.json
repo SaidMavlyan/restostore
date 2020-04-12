@@ -1,0 +1,43 @@
+{
+  "name": "functions",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json src/**/*.ts",
+    "build": "tsc",
+    "serve": "npm run build && env GOOGLE_APPLICATION_CREDENTIALS=\"../firebase-service-key.private.json\" firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts --timeout 5000 --watch --watch-extensions ts"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "main": "lib/functions/src/index.js",
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.6.0",
+    "firebase-functions": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/cors": "^2.8.6",
+    "@types/mocha": "5.2.5",
+    "@types/sinon": "^5.0.2",
+    "@types/supertest": "^2.0.8",
+    "chai": "4.1.2",
+    "firebase-functions-test": "^0.1.7",
+    "mocha": "5.2.0",
+    "sinon": "^6.1.5",
+    "source-map-support": "0.5.9",
+    "supertest": "^4.0.2",
+    "ts-node": "7.0.1",
+    "tslint": "^5.12.0",
+    "typescript": "^3.2.0"
+  },
+  "private": true
+}

@@ -1,0 +1,10 @@
+<div id="ngx-auth" fxLayout="column" fxLayoutAlign="space-evenly center">
+  <mat-card>
+    <ngx-auth-firebaseui fxFlexAlign="center" providers="google"
+                         [resetPasswordEnabled]="true"
+                         [guestEnabled]="false"
+                         (onSuccess)="onLoginSuccess()"
+                         (onError)="printError($event)">
+    </ngx-auth-firebaseui>
+  </mat-card>
+</div>

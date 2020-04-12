@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{isEditing ? "Edit User" : "Add User"}}</h2>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field>
+    <input matInput
+           placeholder="Name"
+           required
+           formControlName="displayName">
+    <mat-error *ngIf="form.controls.displayName.invalid">{{getValidationMessage('displayName')}}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput
+           placeholder="Email"
+           autocomplete="off"
+           required
+           formControlName="email">
+    <mat-error *ngIf="form.controls.email.invalid">{{getValidationMessage('email')}}</mat-error>
+  </mat-form-field>
+
+  <ng-container *ngIf="!isEditing">
+    <mat-form-field>
+      <input matInput
+             type="password"
+             autocomplete="new-password"
+             required
+             placeholder="Password"
+             formControlName="password">
+      <mat-error *ngIf="form.controls.password.invalid">{{getValidationMessage('password')}}</mat-error>
+    </mat-form-field>
+  </ng-container>
+
+  <mat-form-field *ngIf="isAdmin">
+    <mat-label>Role</mat-label>
+    <mat-select formControlName="role" required>
+      <mat-option *ngFor="let role of roles" [value]="role">
+        {{role}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.controls.role.invalid">{{getValidationMessage('role')}}</mat-error>
+  </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center">
+  <button class="mat-raised-button" (click)="close()">
+    Close
+  </button>
+
+  <button class="mat-raised-button mat-primary" [disabled]="form.invalid" (click)="isEditing ? update() : create()">
+    {{isEditing ? "Update" : "Create"}}
+  </button>
+</mat-dialog-actions>
