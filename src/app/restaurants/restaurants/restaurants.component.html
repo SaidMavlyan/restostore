@@ -1,25 +1,28 @@
-<app-page-title title="Restaurant">
-  <button mat-fab title="Add restaurant" color="accent" (click)="addRestaurant()">
-    <mat-icon>add</mat-icon>
-  </button>
-</app-page-title>
+<div fxLayout="row wrap" fxLayoutAlign="space-between stretch">
 
-<div fxLayout="row wrap" fxLayoutAlign="space-evenly center">
-  <ng-container *ngFor="let restaurant of restaurantsByRating">
-    <div fxFlex="33" fxFlex.lt-md="50" fxFlex.xs="100">
-      <a routerLink="/restaurants/{{restaurant.id}}">
-        <mat-card>
+  <div *ngIf="canAdd" fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100" fxLayoutAlign="center center">
+    <button id="addBtn" mat-fab title="Add new Restaurant" color="primary" (click)="addRestaurant()">
+      <mat-icon>add</mat-icon>
+      <div>
+        Add Restaurant
+      </div>
+    </button>
+  </div>
+
+  <div *ngFor="let restaurant of restaurantsByRating"
+       fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
+    <a routerLink="/restaurants/{{restaurant.id}}">
+      <mat-card>
+        <mat-card-content>
           <img mat-card-image [src]="restaurant.photo">
-          <mat-card-content>
-            <div>
-              <div class="details">
-                <h2>{{restaurant.name}}</h2>
-                <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
-              </div>
+          <div>
+            <div class="details">
+              <h2>{{restaurant.name}}</h2>
+              <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
             </div>
-          </mat-card-content>
-        </mat-card>
-      </a>
-    </div>
-  </ng-container>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </a>
+  </div>
 </div>

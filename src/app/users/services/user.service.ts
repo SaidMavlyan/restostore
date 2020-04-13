@@ -7,12 +7,21 @@ import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
 import { User } from '../models/user';
+import { Roles } from '../../const/roles';
 
 export interface CreateUserRequest {
   displayName: string;
   password: string;
   email: string;
   role: string;
+}
+
+function mapUser(user: User): User {
+  return ({
+    ...user,
+    isAdmin: user.role === Roles.admin,
+    isOwner: user.role === Roles.owner,
+  });
 }
 
 @Injectable({
@@ -30,7 +39,7 @@ export class UserService {
     this.afAuth.user.subscribe((user) => {
       if (user?.uid) {
         this.getUser(user.uid).subscribe(currentUser => {
-          this.currentUser$.next(currentUser);
+          this.currentUser$.next(mapUser(currentUser));
         });
       } else {
         this.currentUser$.next(null);
@@ -40,10 +49,10 @@ export class UserService {
 
   reloadCurrentUser() {
     this.getUser(this.currentUser$.getValue().uid)
-      .pipe(take(1))
-      .subscribe(user => {
-        this.currentUser$.next(user);
-      });
+        .pipe(take(1))
+        .subscribe(user => {
+          this.currentUser$.next(mapUser(user));
+        });
   }
 
   getUsers({limit, page, sortField, sortDirection}) {
@@ -63,20 +72,20 @@ export class UserService {
     }
 
     return this.http.get<{ totalSize: number; users: User[] }>(`${this.baseUrl}`, {params})
-      .pipe(
-        catchError(this.errorHandler.onHttpError),
-        finalize(() => this.loaderService.hide())
-      );
+               .pipe(
+                 catchError(this.errorHandler.onHttpError),
+                 finalize(() => this.loaderService.hide())
+               );
   }
 
   getUser(id: string): Observable<User> {
     this.loaderService.show();
     return this.http.get<{ user: User }>(`${this.baseUrl}/${id}`)
-      .pipe(
-        map(result => result.user),
-        catchError(this.errorHandler.onHttpError),
-        finalize(() => this.loaderService.hide())
-      );
+               .pipe(
+                 map(result => result.user),
+                 catchError(this.errorHandler.onHttpError),
+                 finalize(() => this.loaderService.hide())
+               );
   }
 
   create(user: CreateUserRequest): Observable<string> {

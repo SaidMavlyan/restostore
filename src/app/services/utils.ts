@@ -6,3 +6,14 @@ export function convertSnaps<T>(snaps) {
     };
   }) as T[];
 }
+
+export function convertSnap<T>(snap) {
+  if (snap.payload.exists) {
+    return ({
+      id: snap.payload.id,
+      ...snap.payload.data()
+    }) as T;
+  } else {
+    return null;
+  }
+}

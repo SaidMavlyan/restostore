@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RestaurantsComponent } from './restaurants/restaurants.component';
 import { RestaurantComponent } from './restaurant/restaurant.component';
-import { RestaurantDetailResolverService } from './restaurant-detail-resolver.service';
 
 const routes: Routes = [
   {
@@ -15,10 +14,6 @@ const routes: Routes = [
       {
         path: 'restaurants/:id',
         component: RestaurantComponent,
-        resolve: {
-          restaurant: RestaurantDetailResolverService
-        }
-
       },
     ]
   }

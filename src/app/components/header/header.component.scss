@@ -15,5 +15,11 @@ mat-toolbar {
 }
 
 .main-container {
-  padding: 60px;
+  padding: 80px 60px 60px;
+  @media(max-width: 600px) {
+    padding: 80px 20px;
+  }
+  @media(min-width: 1280px) {
+    padding: 180px 12%;
+  }
 }

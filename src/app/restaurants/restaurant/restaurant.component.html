@@ -1,25 +1,44 @@
-<mat-card>
-  <img mat-card-image [src]="restaurant?.photo" alt="Image of {{restaurant.name}}">
-  <mat-card-content>
-    <div>
-      <div class="details">
-        <h2>{{restaurant?.name}}</h2>
-        <div class="rating">
-          <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
-        </div>
-      </div>
-    </div>
-  </mat-card-content>
-</mat-card>
+<div fxLayout="row wrap" fxFill fxLayoutAlign="space-evenly center">
+  <div fxFlex="50" fxFlex.xs="100">
+    <ng-container *ngIf="restaurant">
+      <mat-card>
+        <img mat-card-image [src]="restaurant?.photo" alt="Image of {{restaurant.name}}">
+        <mat-card-content>
+          <div>
+            <div class="details">
+              <h2>{{restaurant?.name}}</h2>
+              <div class="rating">
+                <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions fxLayoutAlign="space-between center">
+          <button mat-flat-button color="primary" (click)="addRating()">
+            <mat-icon>star_border</mat-icon>
+            Rate
+          </button>
 
-<button mat-flat-button color="accent" (click)="addRating()">
-  Add Rating
-</button>
+          <button mat-flat-button color="primary" (click)="editRestaurant()">
+            <mat-icon>create</mat-icon>
+            Edit
+          </button>
 
-<ng-container *ngIf="ratings">
-  <div *ngFor="let review of ratings">
-    {{review.text}} - {{review.rating}} - {{review.userId}}
-    <app-rating-stars [rating]="review.rating"></app-rating-stars>
-    <mat-divider></mat-divider>
+          <button mat-flat-button color="warn" (click)="deleteRestaurant()">
+            <mat-icon>delete_sweep</mat-icon>
+            Delete
+          </button>
+        </mat-card-actions>
+      </mat-card>
+
+    </ng-container>
   </div>
-</ng-container>
+
+  <!--<ng-container *ngIf="ratings">-->
+  <!--  <div *ngFor="let review of ratings">-->
+  <!--    {{review.text}} - {{review.rating}} - {{review.userId}}-->
+  <!--    <app-rating-stars [rating]="review.rating"></app-rating-stars>-->
+  <!--    <mat-divider></mat-divider>-->
+  <!--  </div>-->
+  <!--</ng-container>-->
+</div>

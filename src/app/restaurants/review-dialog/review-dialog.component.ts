@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Review } from '../models/restaurant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RestaurantService } from '../services/restaurant.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Review } from '../models/review';
 
 const TEXT_MAX_LEN = 500;
 const SORTABLE_DATE = 'YYYY-MM-DD';

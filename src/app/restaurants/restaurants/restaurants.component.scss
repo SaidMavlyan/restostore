@@ -1,3 +1,17 @@
 mat-card {
-  margin: 60px;
+  margin-bottom: 20%;
+
+  img{
+    object-fit: cover;
+    max-height: 222px;
+  }
+}
+
+#addBtn {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 30px;
+  &:hover {
+    background-color: rgba(63, 81, 181, 0.9);
+  }
 }

@@ -1,20 +1,11 @@
-export interface Review {
-  dateOfVisit: string;
-  timestamp: string;
-  text: string;
-  rating: number;
-  userId: string;
-}
+import { Review } from './review';
 
 export interface Restaurant {
-  ratings: Review[];
   id: string;
-  name: string;
   ownerId: string;
-  description: string;
+  name: string;
   photo: string;
-  date: string;
-  time: string;
   avgRating: number;
+  ratings: Review[];
 }
 

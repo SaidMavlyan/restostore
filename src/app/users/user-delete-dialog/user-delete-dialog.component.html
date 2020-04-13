@@ -13,7 +13,7 @@
     Close
   </button>
 
-  <button class="mat-raised-button mat-warn" (click)="delete()">
+  <button class="mat-raised-button mat-warn" [disabled]="isDeleting" (click)="delete()">
     Delete
   </button>
 </mat-dialog-actions>

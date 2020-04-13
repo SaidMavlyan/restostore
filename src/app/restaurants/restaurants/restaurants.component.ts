@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RestaurantDialogComponent } from '../restaurant-dialog/restaurant-dialog.component';
@@ -13,11 +13,11 @@ import { LoaderService } from '../../services/loader.service';
   templateUrl: './restaurants.component.html',
   styleUrls: ['./restaurants.component.scss']
 })
-export class RestaurantsComponent {
+export class RestaurantsComponent implements OnInit {
 
   dialogConfig = new MatDialogConfig();
   restaurantsByRating: Array<Restaurant> = [];
-  currentUserId: string;
+  canAdd: boolean;
 
   constructor(private db: AngularFirestore,
               private dialog: MatDialog,
@@ -31,10 +31,19 @@ export class RestaurantsComponent {
     });
   }
 
+  ngOnInit() {
+    this.userService.currentUser$.subscribe((user) => {
+      if (user) {
+        this.canAdd = user.isAdmin || user.isOwner;
+      } else {
+        this.canAdd = false;
+      }
+    });
+  }
+
   addRestaurant() {
     this.dialogConfig.width = '400px';
     this.dialogConfig.autoFocus = true;
-    this.dialogConfig.data = {uid: this.currentUserId};
     this.dialog.open(RestaurantDialogComponent, this.dialogConfig);
   }
 }

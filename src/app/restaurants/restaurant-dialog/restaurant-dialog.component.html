@@ -1,12 +1,5 @@
 <h2 mat-dialog-title>{{isEditing ? "Edit Restaurant" : "Add Restaurant"}}</h2>
 <mat-dialog-content [formGroup]="form">
-  <mat-form-field>
-    <input matInput
-           placeholder="Description"
-           required
-           formControlName="description">
-    <mat-error *ngIf="form.controls.description.invalid">{{getValidationMessage('description')}}</mat-error>
-  </mat-form-field>
 
   <mat-form-field>
     <input matInput
@@ -16,17 +9,6 @@
     <mat-error *ngIf="form.controls.name.invalid">{{getValidationMessage('name')}}</mat-error>
   </mat-form-field>
 
-  <mat-form-field>
-    <input matInput [matDatepicker]="datePicker" placeholder="Date" required formControlName="date">
-    <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-    <mat-datepicker #datePicker></mat-datepicker>
-  </mat-form-field>
-
-  <mat-form-field>
-    <input matInput [ngxTimepicker]="endTime" [format]="24" placeholder="Time"
-           formControlName="time" required/>
-  </mat-form-field>
-  <ngx-material-timepicker #endTime></ngx-material-timepicker>
 </mat-dialog-content>
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center">
@@ -34,7 +16,8 @@
     Close
   </button>
 
-  <button class="mat-raised-button mat-primary" [disabled]="form.invalid" (click)="isEditing ? update() : create()">
+  <button class="mat-raised-button mat-primary" [disabled]="form.invalid || isSaving"
+          (click)="isEditing ? update() : create()">
     {{isEditing ? "Update" : "Create"}}
   </button>
 </mat-dialog-actions>

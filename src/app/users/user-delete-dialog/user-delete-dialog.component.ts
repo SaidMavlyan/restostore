@@ -13,6 +13,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 })
 export class UserDeleteDialogComponent {
 
+  public isDeleting = false;
   public isDeletingSelf: boolean;
 
   constructor(private dialogRef: MatDialogRef<UserDeleteDialogComponent>,
@@ -25,8 +26,10 @@ export class UserDeleteDialogComponent {
   }
 
   delete() {
+    this.isDeleting = true;
     this.userService.delete(this.data.user)
         .subscribe(() => {
+          this.isDeleting = true;
           if (this.isDeletingSelf) {
             this.onCurrentAccountDeletion(this.data.user.email);
             this.dialogRef.close();

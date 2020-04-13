@@ -18,6 +18,7 @@ export class UserDialogComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   user: User;
+  isSaving = false;
   isEditing = false;
   isAdmin = false;
   subscription: Subscription;
@@ -74,15 +75,19 @@ export class UserDialogComponent implements OnInit, OnDestroy {
   }
 
   create() {
+    this.isSaving = true;
     this.userService.create({...this.form.value})
         .subscribe(() => {
+          this.isSaving = false;
           this.dialogRef.close(this.form.value);
         });
   }
 
   update() {
+    this.isSaving = true;
     this.userService.edit({uid: this.user.uid, ...this.form.value})
         .subscribe(() => {
+          this.isSaving = false;
           this.dialogRef.close(this.form.value);
         });
   }

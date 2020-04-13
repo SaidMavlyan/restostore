@@ -4,8 +4,9 @@ import { Observable } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
-import { convertSnaps } from '../../services/utils';
-import { Restaurant, Review } from '../models/restaurant';
+import { convertSnap, convertSnaps } from '../../services/utils';
+import { Restaurant } from '../models/restaurant';
+import { Review } from '../models/review';
 
 @Injectable({
   providedIn: 'root'
@@ -35,15 +36,10 @@ export class RestaurantService {
                });
   }
 
-
   get(id: string): Observable<Restaurant> {
-    this.loaderService.show();
-    return this.db.doc(`restaurants/${id}`).get().pipe(
-      map(snap => ({id: snap.id, ...snap.data()} as Restaurant)),
+    return this.db.doc(`restaurants/${id}`).snapshotChanges().pipe(
+      map(snap => convertSnap<Restaurant>(snap)),
       catchError(this.errorHandler.onHttpError),
-      finalize(() => {
-        this.loaderService.hide();
-      })
     );
   }
 
@@ -60,7 +56,9 @@ export class RestaurantService {
     this.loaderService.show();
     return this.db.doc(`restaurants/${restaurant.id}`).delete()
                .catch(this.errorHandler.onHttpError)
-               .finally(this.loaderService.hide);
+               .finally(() => {
+                 this.loaderService.hide();
+               });
   }
 
   getRatings(id: string): Observable<Review[]> {

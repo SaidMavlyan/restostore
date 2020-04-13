@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Delete Restaurant</h2>
 <mat-dialog-content>
-  Are you sure you want to delete this entry: <strong>{{restaurant.description}}</strong>?
+  Are you sure you want to delete this entry: <strong>{{restaurant.name}}</strong>?
 </mat-dialog-content>
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center">
@@ -8,7 +8,7 @@
     Close
   </button>
 
-  <button class="mat-raised-button mat-warn" (click)="delete()">
+  <button class="mat-raised-button mat-warn" [disabled]="isDeleting" (click)="delete()">
     Delete
   </button>
 </mat-dialog-actions>

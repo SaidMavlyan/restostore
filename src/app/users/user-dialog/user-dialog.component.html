@@ -46,7 +46,8 @@
     Close
   </button>
 
-  <button class="mat-raised-button mat-primary" [disabled]="form.invalid" (click)="isEditing ? update() : create()">
+  <button class="mat-raised-button mat-primary" [disabled]="form.invalid || isSaving"
+          (click)="isEditing ? update() : create()">
     {{isEditing ? "Update" : "Create"}}
   </button>
 </mat-dialog-actions>
