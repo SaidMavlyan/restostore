@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
-import { convertSnap, convertSnaps } from '../../services/utils';
+import { convertDocs, convertSnap, convertSnaps } from '../../services/utils';
 import { Restaurant } from '../models/restaurant';
 import { Review } from '../models/review';
 
@@ -13,16 +13,42 @@ import { Review } from '../models/review';
 })
 export class RestaurantService {
 
+  last: any;
+
   constructor(private db: AngularFirestore,
               private loaderService: LoaderService,
               private errorHandler: ErrorHandlerService) {
   }
 
-  loadRestaurants(): Observable<Restaurant[]> {
+  loadRestaurants(isNext = false, limit = 10): Observable<Restaurant[]> {
+    this.loaderService.show();
+    if (!isNext) {
+      this.last = null;
+    }
+
     return this.db.collection('restaurants',
-      ref => ref.orderBy('avgRating', 'desc').limit(10))
+      ref => {
+        let res = ref.orderBy('avgRating', 'desc');
+
+        if (this.last) {
+          res = res.startAfter(this.last);
+        }
+
+        return res.limit(limit);
+      })
                .snapshotChanges()
-               .pipe(map(snaps => convertSnaps<Restaurant>(snaps)));
+               .pipe(
+                 take(1),
+                 map(snaps => {
+                   if (snaps.length) {
+                     this.last = snaps[snaps.length - 1].payload.doc;
+                   }
+                   return convertSnaps<Restaurant>(snaps);
+                 }),
+                 finalize(() => {
+                   this.loaderService.hide();
+                 })
+               );
   }
 
   create(restaurant: Restaurant): Promise<void | Observable<never>> {

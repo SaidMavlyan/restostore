@@ -137,6 +137,7 @@ export async function getUsers(req: Request, res: Response) {
       initDocsRef = initDocsRef.orderBy(sorting[0], sorting[1] as OrderByDirection);
     }
 
+    // todo: refactor to not query all users
     const totalDocsRef = await initDocsRef.get();
     const totalSize = totalDocsRef.size;
 

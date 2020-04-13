@@ -1,3 +1,12 @@
+export function convertDocs<T>(docs) {
+  return docs.map(doc => {
+    return {
+      id: doc.id,
+      ...doc.data()
+    };
+  }) as T[];
+}
+
 export function convertSnaps<T>(snaps) {
   return snaps.map(snap => {
     return {

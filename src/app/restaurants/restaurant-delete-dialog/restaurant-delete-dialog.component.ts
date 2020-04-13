@@ -25,7 +25,7 @@ export class RestaurantDeleteDialogComponent {
     this.isDeleting = true;
     this.rs.delete(this.restaurant)
         .then(() => {
-          this.notifierService.info(`${this.restaurant.name} is successfully deleted.`);
+          this.notifierService.info(`${this.restaurant.name} was successfully deleted.`);
           this.dialogRef.close(true);
         })
         .catch((e) => {
