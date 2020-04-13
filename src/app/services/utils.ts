@@ -26,3 +26,7 @@ export function convertSnap<T>(snap) {
     return null;
   }
 }
+
+export function isWindowBottom() {
+  return (document.body.clientHeight + window.scrollY + 200) >= document.body.scrollHeight;
+}

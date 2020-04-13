@@ -7,6 +7,7 @@ import { RestaurantsRoutingModule } from './restaurants-routing.module';
 import { RestaurantDeleteDialogComponent } from './restaurant-delete-dialog/restaurant-delete-dialog.component';
 import { RestaurantComponent } from './restaurant/restaurant.component';
 import { ReviewDialogComponent } from './review-dialog/review-dialog.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { ReviewDialogComponent } from './review-dialog/review-dialog.component';
   imports: [
     CommonModule,
     RestaurantsRoutingModule,
-    SharedModule
+    SharedModule,
+    MatCheckboxModule
   ]
 })
 export class RestaurantsModule {

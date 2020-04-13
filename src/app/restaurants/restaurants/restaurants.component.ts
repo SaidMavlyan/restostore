@@ -9,6 +9,8 @@ import { UserService } from '../../users/services/user.service';
 import { LoaderService } from '../../services/loader.service';
 import { Subject } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
+import { isWindowBottom } from '../../services/utils';
+import OrderByDirection = firebase.firestore.OrderByDirection;
 
 @Component({
   selector: 'app-restaurants',
@@ -19,7 +21,10 @@ export class RestaurantsComponent implements OnInit {
 
   dialogConfig = new MatDialogConfig();
   restaurants: Array<Restaurant> = [];
+  sort: OrderByDirection = 'desc';
+
   canAdd: boolean;
+  ratingFilter = 'all';
   private loadMore$ = new Subject<number>();
 
   constructor(private db: AngularFirestore,
@@ -41,7 +46,7 @@ export class RestaurantsComponent implements OnInit {
     });
 
     this.loadMore$.pipe(
-      throttleTime(2000)
+      throttleTime(1500)
     ).subscribe(() => {
       this.loadRestaurants(this.restaurants.length > 0);
     });
@@ -53,21 +58,27 @@ export class RestaurantsComponent implements OnInit {
     this.dialog.open(RestaurantDialogComponent, this.dialogConfig);
   }
 
+  applyFilter() {
+    this.loadRestaurants(false);
+  }
+
   loadRestaurants(isNext = false) {
-    this.rs.loadRestaurants(isNext, 10).subscribe(res => {
+    if (!isNext) {
+      this.restaurants = [];
+    }
+
+    this.rs.loadRestaurants({isNext, sort: this.sort, rating: Number(this.ratingFilter)}).subscribe(res => {
       this.restaurants.push(...res);
     });
   }
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event: any) {
-    if (isBottom()) {
+    if (isWindowBottom()) {
       this.loadMore$.next(1);
     }
 
   }
+
 }
 
-function isBottom() {
-  return (document.body.clientHeight + window.scrollY + 200) >= document.body.scrollHeight;
-}

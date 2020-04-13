@@ -4,9 +4,10 @@ import { Observable } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
-import { convertDocs, convertSnap, convertSnaps } from '../../services/utils';
+import { convertSnap, convertSnaps } from '../../services/utils';
 import { Restaurant } from '../models/restaurant';
 import { Review } from '../models/review';
+import OrderByDirection = firebase.firestore.OrderByDirection;
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class RestaurantService {
               private errorHandler: ErrorHandlerService) {
   }
 
-  loadRestaurants(isNext = false, limit = 10): Observable<Restaurant[]> {
+  loadRestaurants({isNext = false, limit = 10, sort = 'desc', rating}): Observable<Restaurant[]> {
     this.loaderService.show();
     if (!isNext) {
       this.last = null;
@@ -28,7 +29,12 @@ export class RestaurantService {
 
     return this.db.collection('restaurants',
       ref => {
-        let res = ref.orderBy('avgRating', 'desc');
+        let res = ref.orderBy('avgRating', sort as OrderByDirection);
+
+        if (rating >= 0 && rating <= 5) {
+          res = res.where('avgRating', '>=', rating)
+                   .where('avgRating', '<', rating + 1);
+        }
 
         if (this.last) {
           res = res.startAfter(this.last);

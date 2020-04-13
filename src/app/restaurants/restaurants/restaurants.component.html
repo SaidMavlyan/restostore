@@ -1,3 +1,50 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+  <mat-form-field appearance="outline" fxFlex="50" fxFlex.lt-md="90">
+
+    <mat-label>Filter restaurants by rating</mat-label>
+    <mat-select (closed)="applyFilter()" [formControl]="" multiple>
+
+      <div class="sort-option-wrap">
+        <mat-option class="hidden"></mat-option>
+      </div>
+
+      <div class="sort-option-wrap">
+        <mat-option class="hidden"></mat-option>
+        <mat-option class="hidden"></mat-option>
+        <div class="sort-option">
+          <label>Rating stars:</label>
+          <mat-radio-group [(ngModel)]="ratingFilter">
+            <mat-radio-button value="all">All</mat-radio-button>
+            <mat-radio-button value="0">0</mat-radio-button>
+            <mat-radio-button value="1">1</mat-radio-button>
+            <mat-radio-button value="2">2</mat-radio-button>
+            <mat-radio-button value="3">3</mat-radio-button>
+            <mat-radio-button value="4">4</mat-radio-button>
+            <mat-radio-button value="5">5</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="sort-option-wrap">
+        <mat-option class="hidden"></mat-option>
+        <div class="sort-option">
+          <label>Sort:</label>
+          <mat-radio-group [(ngModel)]="sort">
+            <mat-radio-button value="asc">Asc</mat-radio-button>
+            <mat-radio-button value="desc">Desc</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="sort-option-wrap">
+        <mat-option class="hidden"></mat-option>
+      </div>
+
+    </mat-select>
+  </mat-form-field>
+</div>
+
+
 <div class="container" fxLayout="row wrap" fxLayoutAlign="space-between stretch">
 
   <div *ngIf="canAdd" fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100" fxLayoutAlign="center center">

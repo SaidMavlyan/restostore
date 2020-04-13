@@ -2,10 +2,33 @@
   min-height: 105vh;
 }
 
+.sort-option-wrap {
+  position: relative;
+
+  .hidden {
+    visibility: hidden;
+  }
+
+  .sort-option {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+
+    label {
+      font-size: 1.4em;
+    }
+
+  }
+
+  mat-radio-button {
+    margin: auto 7px;
+  }
+}
+
 mat-card {
   margin-bottom: 20%;
 
-  img{
+  img {
     object-fit: cover;
     max-height: 222px;
   }
@@ -15,6 +38,7 @@ mat-card {
   width: 150px;
   height: 150px;
   margin-bottom: 30px;
+
   &:hover {
     background-color: rgba(63, 81, 181, 0.9);
   }

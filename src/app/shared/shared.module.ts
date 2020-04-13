@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -29,6 +29,7 @@ import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter, MomentDateModule } 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { RatingStarsComponent } from './rating-stars/rating-stars.component';
 import { PageTitleComponent } from './page-title/page-title.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 export const MY_FORMATS = {
   parse: {
@@ -68,12 +69,14 @@ export const MY_FORMATS = {
     MatSidenavModule,
     MatSnackBarModule,
     MatSortModule,
+    MatRadioModule,
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
     MatNativeDateModule,
     MatDatepickerModule,
     ReactiveFormsModule,
+    FormsModule,
     NgxMaterialTimepickerModule
   ],
   exports: [
@@ -102,10 +105,12 @@ export const MY_FORMATS = {
     MatSidenavModule,
     MatSnackBarModule,
     MatSortModule,
+    MatRadioModule,
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
     ReactiveFormsModule,
+    FormsModule,
     NgxMaterialTimepickerModule,
   ],
   providers: [
