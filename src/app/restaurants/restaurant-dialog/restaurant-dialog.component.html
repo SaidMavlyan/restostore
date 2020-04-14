@@ -9,6 +9,18 @@
     <mat-error *ngIf="form.controls.name.invalid">{{getValidationMessage('name')}}</mat-error>
   </mat-form-field>
 
+  <div>
+    <span>Image:</span>
+
+    <input (change)="selectFile($event)" type="file">
+    <div *ngIf="(uploadPercent$ | async) as percentage">
+      Upload Progress:
+      <mat-progress-bar [value]="percentage" class="progress-bar" mode="determinate">
+      </mat-progress-bar>
+      <span>{{percentage / 100 | percent}}</span>
+    </div>
+  </div>
+
 </mat-dialog-content>
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center">
@@ -16,8 +28,9 @@
     Close
   </button>
 
-  <button class="mat-raised-button mat-primary" [disabled]="form.invalid || isSaving"
-          (click)="isEditing ? update() : create()">
+  <button (click)="save(isEditing)"
+          [disabled]="form.invalid || isSaving"
+          class="mat-raised-button mat-primary">
     {{isEditing ? "Update" : "Create"}}
   </button>
 </mat-dialog-actions>

@@ -1,8 +1,8 @@
 <div fxLayout="row" fxLayoutAlign="center center">
   <mat-form-field appearance="outline" fxFlex="50" fxFlex.lt-md="90">
 
-    <mat-label>Filter restaurants by rating</mat-label>
-    <mat-select (closed)="applyFilter()" [formControl]="" multiple>
+    <mat-label>{{appliedFilter}}</mat-label>
+    <mat-select #filterSelect (closed)="applyFilter()" [formControl]="" multiple>
 
       <div class="sort-option-wrap">
         <mat-option class="hidden"></mat-option>
@@ -14,13 +14,7 @@
         <div class="sort-option">
           <label>Rating stars:</label>
           <mat-radio-group [(ngModel)]="ratingFilter">
-            <mat-radio-button value="all">All</mat-radio-button>
-            <mat-radio-button value="0">0</mat-radio-button>
-            <mat-radio-button value="1">1</mat-radio-button>
-            <mat-radio-button value="2">2</mat-radio-button>
-            <mat-radio-button value="3">3</mat-radio-button>
-            <mat-radio-button value="4">4</mat-radio-button>
-            <mat-radio-button value="5">5</mat-radio-button>
+            <mat-radio-button *ngFor="let opt of ratingOptions" value="{{opt}}">{{opt}}</mat-radio-button>
           </mat-radio-group>
         </div>
       </div>
@@ -38,38 +32,46 @@
 
       <div class="sort-option-wrap">
         <mat-option class="hidden"></mat-option>
+        <mat-option class="hidden"></mat-option>
+        <div class="apply-button">
+          <button (click)="filterSelect.close()" color="primary" mat-button>
+            Apply
+          </button>
+        </div>
       </div>
 
     </mat-select>
   </mat-form-field>
-</div>
 
+  <div *ngIf="canAdd">
+    <button id="addBtn" mat-fab title="Add new Restaurant" color="primary" (click)="addRestaurant()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>
 
 <div class="container" fxLayout="row wrap" fxLayoutAlign="space-between stretch">
 
-  <div *ngIf="canAdd" fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100" fxLayoutAlign="center center">
-    <button id="addBtn" mat-fab title="Add new Restaurant" color="primary" (click)="addRestaurant()">
-      <mat-icon>add</mat-icon>
-      <div>
-        Add Restaurant
-      </div>
-    </button>
-  </div>
-
-  <div *ngFor="let restaurant of restaurants"
-       fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
-    <a routerLink="/restaurants/{{restaurant.id}}">
-      <mat-card>
-        <mat-card-content>
-          <img mat-card-image [src]="restaurant.photo">
-          <div>
-            <div class="details">
-              <h2>{{restaurant.name}}</h2>
-              <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
+  <ng-container *ngIf="restaurants.length; else noRestaurants">
+    <div *ngFor="let restaurant of restaurants"
+         fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
+      <a routerLink="/restaurants/{{restaurant.id}}">
+        <mat-card>
+          <mat-card-content>
+            <img [src]="restaurant?.photo || placeholder" alt="Image of {{restaurant.name}}" mat-card-image>
+            <div>
+              <div class="details">
+                <h2>{{restaurant.name}}</h2>
+                <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
+              </div>
             </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </a>
-  </div>
+          </mat-card-content>
+        </mat-card>
+      </a>
+    </div>
+  </ng-container>
+
+  <ng-template #noRestaurants>
+    <div *ngIf="!isLoading" class="no-resto" fxFlexFill>No restaurants. Try to change filter parameters.</div>
+  </ng-template>
 </div>

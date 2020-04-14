@@ -4,6 +4,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RestaurantService } from '../services/restaurant.service';
 import { Restaurant } from '../models/restaurant';
 import { UserService } from '../../users/services/user.service';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Observable } from 'rxjs';
+import { NotifierService } from '../../services/notifier.service';
 
 const TEXT_MAX_LEN = 500;
 
@@ -18,9 +21,13 @@ export class RestaurantDialogComponent implements OnInit {
   form: FormGroup;
   isEditing = false;
   isSaving = false;
+  uploadPercent$: Observable<number>;
+  file: File;
 
   constructor(private fb: FormBuilder,
               private rs: RestaurantService,
+              private storage: AngularFireStorage,
+              private notifierService: NotifierService,
               private userService: UserService,
               private dialogRef: MatDialogRef<RestaurantDialogComponent>,
               @Inject(MAT_DIALOG_DATA) restaurant: Restaurant) {
@@ -31,14 +38,10 @@ export class RestaurantDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    const photoID = Math.floor(Math.random() * 22) + 1;
-    const photo = 'https://storage.googleapis.com/firestorequickstarts.appspot.com/food_' + photoID + '.png';
-
     this.form = this.fb.group({
       ownerId: [this.restaurant.ownerId || this.userService.currentUser$.getValue().uid],
       name: [this.restaurant.name || undefined, [Validators.required, Validators.maxLength(TEXT_MAX_LEN)]],
       avgRating: 4,
-      photo
     });
   }
 
@@ -56,25 +59,47 @@ export class RestaurantDialogComponent implements OnInit {
     }
   }
 
-  create() {
-    this.isSaving = true;
-    this.rs.create(this.form.value)
-        .then(() => this.close())
-        .finally(() => {
-          this.isSaving = false;
-        });
+  selectFile(event) {
+    this.file = event.target.files[0];
   }
 
-  update() {
-    this.isSaving = true;
-    this.rs.update(this.restaurant.id, this.form.value)
-        .then(() => this.close())
-        .finally(() => {
-          this.isSaving = false;
-        });
+  async uploadPhoto(): Promise<string> {
+    const ownerId = this.form.get('ownerId').value;
+    const task = this.storage.upload(`restaurants/${ownerId}/resto_photo`, this.file);
+
+    this.uploadPercent$ = task.percentageChanges();
+    const finishedTask = await task;
+    return await finishedTask.ref.getDownloadURL();
   }
 
-  close() {
-    this.dialogRef.close();
+  async save(isEditing: boolean) {
+    this.isSaving = true;
+
+    try {
+
+      let data;
+
+      if (this.file) {
+        data = {...this.form.value, photo: await this.uploadPhoto()};
+      } else {
+        data = {...this.form.value};
+      }
+
+      if (isEditing) {
+        await this.rs.update(this.restaurant.id, data);
+      } else {
+        await this.rs.create(data);
+      }
+
+      this.close(true);
+    } catch (e) {
+      this.notifierService.error(e);
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
+  close(status = false) {
+    this.dialogRef.close(status);
   }
 }

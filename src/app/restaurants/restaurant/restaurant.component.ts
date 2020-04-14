@@ -7,6 +7,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RestaurantDeleteDialogComponent } from '../restaurant-delete-dialog/restaurant-delete-dialog.component';
 import { mergeMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
+import { placeholderImage } from '../../const/util';
 
 @Component({
   selector: 'app-restaurant',
@@ -16,6 +17,7 @@ import { EMPTY, of } from 'rxjs';
 export class RestaurantComponent implements OnInit {
 
   restaurant: Restaurant;
+  placeholder = placeholderImage;
   // ratings: Review[];
   dialogConfig = new MatDialogConfig();
 

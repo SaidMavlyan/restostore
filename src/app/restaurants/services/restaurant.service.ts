@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentData, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
-import { convertSnap, convertSnaps } from '../../services/utils';
+import { convertDocs, convertSnap, convertSnaps } from '../../services/utils';
 import { Restaurant } from '../models/restaurant';
 import { Review } from '../models/review';
+import { RestaurantsQueryParams } from '../models/restaurants-query-params';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
 @Injectable({
@@ -14,17 +15,19 @@ import OrderByDirection = firebase.firestore.OrderByDirection;
 })
 export class RestaurantService {
 
-  last: any;
+  lastDoc: QueryDocumentSnapshot<DocumentData>;
+  lastQuery: RestaurantsQueryParams = {};
 
   constructor(private db: AngularFirestore,
               private loaderService: LoaderService,
               private errorHandler: ErrorHandlerService) {
   }
 
-  loadRestaurants({isNext = false, limit = 10, sort = 'desc', rating}): Observable<Restaurant[]> {
+  loadRestaurants({isNext = false, limit = 10, sort = 'desc', rating}: RestaurantsQueryParams): Observable<Restaurant[]> {
     this.loaderService.show();
+    this.lastQuery = arguments[0];
     if (!isNext) {
-      this.last = null;
+      this.lastDoc = null;
     }
 
     return this.db.collection('restaurants',
@@ -36,20 +39,20 @@ export class RestaurantService {
                    .where('avgRating', '<', rating + 1);
         }
 
-        if (this.last) {
-          res = res.startAfter(this.last);
+        if (this.lastDoc) {
+          res = res.startAfter(this.lastDoc);
         }
 
         return res.limit(limit);
       })
-               .snapshotChanges()
+               .get()
                .pipe(
                  take(1),
-                 map(snaps => {
-                   if (snaps.length) {
-                     this.last = snaps[snaps.length - 1].payload.doc;
+                 map(querySnapp => {
+                   if (querySnapp.size) {
+                     this.lastDoc = querySnapp.docs[querySnapp.size - 1];
                    }
-                   return convertSnaps<Restaurant>(snaps);
+                   return convertDocs<Restaurant>(querySnapp.docs);
                  }),
                  finalize(() => {
                    this.loaderService.hide();

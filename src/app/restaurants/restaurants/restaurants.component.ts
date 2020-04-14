@@ -10,6 +10,8 @@ import { LoaderService } from '../../services/loader.service';
 import { Subject } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
 import { isWindowBottom } from '../../services/utils';
+import { NotifierService } from '../../services/notifier.service';
+import { placeholderImage } from '../../const/util';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
 @Component({
@@ -21,19 +23,32 @@ export class RestaurantsComponent implements OnInit {
 
   dialogConfig = new MatDialogConfig();
   restaurants: Array<Restaurant> = [];
+  ratingOptions = ['all', '0', '1', '2', '3', '4', '5'];
   sort: OrderByDirection = 'desc';
+  ratingFilter = this.ratingOptions[0];
+  canAdd = false;
+  isLoading = false;
+  placeholder = placeholderImage;
 
-  canAdd: boolean;
-  ratingFilter = 'all';
   private loadMore$ = new Subject<number>();
+  appliedFilter = 'Filter restaurants by rating';
 
   constructor(private db: AngularFirestore,
               private dialog: MatDialog,
               private userService: UserService,
               private loaderService: LoaderService,
+              private notifierService: NotifierService,
               private afAuth: AngularFireAuth,
               private rs: RestaurantService) {
-    this.loadRestaurants();
+    if (this.rs.lastQuery.sort) {
+      this.sort = this.rs.lastQuery.sort;
+    }
+
+    if (this.rs.lastQuery.rating) {
+      this.ratingFilter = isNaN(this.rs.lastQuery.rating) ? this.ratingFilter : String(this.rs.lastQuery.rating);
+    }
+
+    this.applyFilter();
   }
 
   ngOnInit() {
@@ -55,20 +70,32 @@ export class RestaurantsComponent implements OnInit {
   addRestaurant() {
     this.dialogConfig.width = '400px';
     this.dialogConfig.autoFocus = true;
-    this.dialog.open(RestaurantDialogComponent, this.dialogConfig);
+    this.dialog.open(RestaurantDialogComponent, this.dialogConfig).afterClosed()
+        .subscribe((v) => {
+          if (v) {
+            this.notifierService.info('Successfully created new restaurant');
+            this.loadRestaurants(false);
+          }
+        });
   }
 
   applyFilter() {
     this.loadRestaurants(false);
+    const res = this.ratingFilter === this.ratingOptions[0] ? 'All' : ` ${this.ratingFilter} star`;
+    this.appliedFilter = `${res} restaurats in ${this.sort} order`;
   }
 
   loadRestaurants(isNext = false) {
-    if (!isNext) {
-      this.restaurants = [];
-    }
+
+    this.isLoading = true;
 
     this.rs.loadRestaurants({isNext, sort: this.sort, rating: Number(this.ratingFilter)}).subscribe(res => {
-      this.restaurants.push(...res);
+      if (isNext) {
+        this.restaurants.push(...res);
+      } else {
+        this.restaurants = res;
+      }
+      this.isLoading = false;
     });
   }
 
@@ -77,8 +104,6 @@ export class RestaurantsComponent implements OnInit {
     if (isWindowBottom()) {
       this.loadMore$.next(1);
     }
-
   }
-
 }
 

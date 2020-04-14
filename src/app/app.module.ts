@@ -19,6 +19,7 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
 import { AuthTokenHttpInterceptorProvider } from './services/auth-token.interseptor';
 import { SharedModule } from './shared/shared.module';
 import { UsersModule } from './users/users.module';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { UsersModule } from './users/users.module';
     AngularFireAuthGuardModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    AngularFireStorageModule,
     BrowserAnimationsModule,
     MatPasswordStrengthModule.forRoot(),
     UsersModule,
