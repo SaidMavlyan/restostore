@@ -17,9 +17,10 @@ export class ReviewsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.reviewService.getReviews(this.restaurantId)
-        .subscribe(reviews => {
-          this.reviews = reviews;
-        });
+    this.reviewService.getReviews(this.restaurantId, {limit: 10, page: 0})
+        .subscribe(result => {
+            this.reviews = result.reviews;
+          }
+        );
   }
 }
