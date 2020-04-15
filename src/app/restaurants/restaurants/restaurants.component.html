@@ -55,7 +55,7 @@
   <ng-container *ngIf="restaurants.length; else noRestaurants">
     <div *ngFor="let restaurant of restaurants"
          fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
-      <a routerLink="/restaurants/{{restaurant.id}}">
+      <div class="resto-card" routerLink="/restaurants/{{restaurant.id}}">
         <mat-card>
           <mat-card-content>
             <img [src]="restaurant?.photo || placeholder" alt="Image of {{restaurant.name}}" mat-card-image>
@@ -67,7 +67,7 @@
             </div>
           </mat-card-content>
         </mat-card>
-      </a>
+      </div>
     </div>
   </ng-container>
 

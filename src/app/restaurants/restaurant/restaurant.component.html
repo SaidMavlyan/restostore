@@ -36,10 +36,4 @@
 
 </div>
 
-<div fxFill fxLayout="row wrap" fxLayoutAlign="center center">
-  <div *ngFor="let review of reviews" fxFlex="51" fxFlex.xs="100">
-    {{review.comment}} - {{review.rating}} - {{review.userId}}
-    <app-rating-stars [rating]="review.rating"></app-rating-stars>
-    <mat-divider></mat-divider>
-  </div>
-</div>
+<app-reviews *ngIf="restaurant" [restaurantId]="restaurant.id"></app-reviews>

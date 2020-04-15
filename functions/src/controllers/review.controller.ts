@@ -44,7 +44,7 @@ export async function createReview(req: Request, res: Response) {
           avgRating: newAverage
         });
 
-        return transaction.set(ratingDoc, {rating, comment});
+        return transaction.set(ratingDoc, {userId: uid, rating, comment});
       });
     });
 

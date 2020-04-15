@@ -9,7 +9,6 @@ import { mergeMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
 import { placeholderImage } from '../../const/util';
 import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
-import { Review } from '../models/review';
 import { ReviewService } from '../services/review.service';
 
 @Component({
@@ -21,7 +20,6 @@ export class RestaurantComponent implements OnInit {
 
   restaurant: Restaurant;
   placeholder = placeholderImage;
-  reviews: Review[];
   dialogConfig = new MatDialogConfig();
 
   constructor(private route: ActivatedRoute,
@@ -45,20 +43,12 @@ export class RestaurantComponent implements OnInit {
         }
       })).subscribe((restaurant: Restaurant) => {
       this.restaurant = restaurant;
-      this.getReviews();
     });
   }
 
   addReview() {
     this.dialogConfig.data = {restaurant: this.restaurant};
     this.dialog.open(ReviewDialogComponent, this.dialogConfig);
-  }
-
-  getReviews() {
-    this.reviewService.getRatings(this.restaurant.id)
-        .subscribe(reviews => {
-          this.reviews = reviews;
-        });
   }
 
   editRestaurant() {

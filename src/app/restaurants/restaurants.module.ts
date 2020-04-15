@@ -8,6 +8,7 @@ import { RestaurantDeleteDialogComponent } from './restaurant-delete-dialog/rest
 import { RestaurantComponent } from './restaurant/restaurant.component';
 import { ReviewDialogComponent } from './review-dialog/review-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ReviewsComponent } from './reviews/reviews.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     RestaurantDeleteDialogComponent,
     RestaurantComponent,
     ReviewDialogComponent,
+    ReviewsComponent,
   ],
   entryComponents: [
     RestaurantDialogComponent,

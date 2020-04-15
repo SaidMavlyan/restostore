@@ -7,7 +7,22 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class RatingStarsComponent implements OnInit {
 
-  @Input() rating: number;
+  fullStars = [];
+  emptyStars = [];
+  halfStar = false;
+  @Input() showNumberRating = true;
+  @Input() numberOfStars = 5;
+  private pRating: number;
+
+  get rating() {
+    return this.pRating;
+  }
+
+  @Input() set rating(value: number) {
+    this.fullStars = Array(Math.trunc(value));
+    this.emptyStars = Array(this.numberOfStars - Math.trunc(value));
+    this.pRating = value;
+  }
 
   constructor() {
   }

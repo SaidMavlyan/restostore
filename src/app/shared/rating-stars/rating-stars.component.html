@@ -1,10 +1,8 @@
 <div class="" id="rating">
   <div class="rating">
-    <mat-icon>star_border</mat-icon>
-    <mat-icon>star_border</mat-icon>
-    <mat-icon>star_border</mat-icon>
-    <mat-icon>star_border</mat-icon>
-    <mat-icon>star_border</mat-icon>
-    <span>{{rating.toFixed(2)}}</span>
+    <span *ngIf="showNumberRating" class="number">{{rating.toFixed(1)}}</span>
+    <mat-icon *ngFor="let i of fullStars">star</mat-icon>
+    <mat-icon *ngIf="halfStar">star</mat-icon>
+    <mat-icon *ngFor="let i of emptyStars">star_border</mat-icon>
   </div>
 </div>

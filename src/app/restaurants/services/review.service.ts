@@ -34,9 +34,9 @@ export class ReviewService {
     ).toPromise();
   }
 
-  getRatings(id: string): Observable<Review[]> {
+  getReviews(restaurantId: string): Observable<Review[]> {
     this.loaderService.show();
-    return this.db.collection(`restaurants/${id}/ratings`)
+    return this.db.collection(`restaurants/${restaurantId}/ratings`)
                .snapshotChanges()
                .pipe(
                  map(snaps => {
