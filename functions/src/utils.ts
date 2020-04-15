@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as admin from 'firebase-admin';
 import { environment } from '../../src/environments/environment';
+import { Response } from 'express';
 
 const apiKey = environment.firebase.apiKey;
 
@@ -51,3 +52,34 @@ export async function createTestUser(role: string = 'user'): Promise<RestUser> {
     console.log('Failed to create user', e.response.data);
   }
 }
+
+const DATA_VALIDATION_ERROR = 'DataValidationError';
+
+export function handleError(res: Response, err: any) {
+  if (err.name === DATA_VALIDATION_ERROR) {
+    res.status(400);
+    return res.send({message: `${err.message}`});
+  } else {
+    res.status(500);
+    return res.send({message: `${err.code} - ${err.message}`});
+  }
+}
+
+export function validateRating(rating: number) {
+  if (rating < 1 || rating > 5) {
+    throw {name: DATA_VALIDATION_ERROR, message: 'Rating should be between 1 and 5'};
+  }
+}
+
+export function validatePassword(password: string) {
+  if (password.length < 8) {
+    throw {name: DATA_VALIDATION_ERROR, message: 'Password should be more than 8 characters long'};
+  }
+}
+
+export function validateRequired(...fields) {
+  if (fields.some(field => !field)) {
+    throw {name: DATA_VALIDATION_ERROR, message: 'Missing fields'};
+  }
+}
+

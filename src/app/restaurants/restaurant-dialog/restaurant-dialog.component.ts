@@ -41,7 +41,6 @@ export class RestaurantDialogComponent implements OnInit {
     this.form = this.fb.group({
       ownerId: [this.restaurant.ownerId || this.userService.currentUser$.getValue().uid],
       name: [this.restaurant.name || undefined, [Validators.required, Validators.maxLength(TEXT_MAX_LEN)]],
-      avgRating: 4,
     });
   }
 
@@ -88,7 +87,7 @@ export class RestaurantDialogComponent implements OnInit {
       if (isEditing) {
         await this.rs.update(this.restaurant.id, data);
       } else {
-        await this.rs.create(data);
+        await this.rs.create({...data, avgRating: 0, numRatings: 0});
       }
 
       this.close(true);

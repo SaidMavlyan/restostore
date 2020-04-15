@@ -14,7 +14,7 @@
           </div>
         </mat-card-content>
         <mat-card-actions fxLayoutAlign="space-between center">
-          <button mat-flat-button color="primary" (click)="addRating()">
+          <button (click)="addReview()" color="primary" mat-flat-button>
             <mat-icon>star_border</mat-icon>
             Rate
           </button>
@@ -34,11 +34,12 @@
     </ng-container>
   </div>
 
-  <!--<ng-container *ngIf="ratings">-->
-  <!--  <div *ngFor="let review of ratings">-->
-  <!--    {{review.text}} - {{review.rating}} - {{review.userId}}-->
-  <!--    <app-rating-stars [rating]="review.rating"></app-rating-stars>-->
-  <!--    <mat-divider></mat-divider>-->
-  <!--  </div>-->
-  <!--</ng-container>-->
+</div>
+
+<div fxFill fxLayout="row wrap" fxLayoutAlign="center center">
+  <div *ngFor="let review of reviews" fxFlex="51" fxFlex.xs="100">
+    {{review.comment}} - {{review.rating}} - {{review.userId}}
+    <app-rating-stars [rating]="review.rating"></app-rating-stars>
+    <mat-divider></mat-divider>
+  </div>
 </div>

@@ -1,10 +1,25 @@
 import { Application } from 'express';
 import { isAuthenticated } from './authenticated';
 import { isAuthorized } from './authorized';
-import { create, get, getUsers, patch, remove, resetPassword } from './controller';
+import { create, get, getUsers, patch, remove, resetPassword } from './controllers/users.controller';
 import { UserManagerRoles } from './roles';
+import { createReview } from './controllers/review.controller';
 
 export function routesConfig(app: Application) {
+  userRoutes(app);
+  reviewRoutes(app);
+}
+
+function reviewRoutes(app: Application) {
+
+  app.post('/reviews', [
+    isAuthenticated,
+    createReview
+  ]);
+
+}
+
+function userRoutes(app: Application) {
 
   app.post('/users', [
     isAuthenticated,
@@ -42,3 +57,4 @@ export function routesConfig(app: Application) {
     remove
   ]);
 }
+

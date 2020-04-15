@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as firebase from 'firebase';
 import * as admin from 'firebase-admin';
-import { signIn } from './utils';
+import { handleError, signIn, validatePassword, validateRequired } from '../utils';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
 const DEFAULT_LIMIT_PER_PAGE = 10;
@@ -165,29 +165,5 @@ async function mapUser(user: admin.auth.UserRecord) {
     displayName: user.displayName,
     role: customClaims?.role
   };
-}
-
-const DATA_VALIDATION_ERROR = 'DataValidationError';
-
-function handleError(res: Response, err: any) {
-  if (err.name === DATA_VALIDATION_ERROR) {
-    res.status(400);
-    return res.send({message: `${err.message}`});
-  } else {
-    res.status(500);
-    return res.send({message: `${err.code} - ${err.message}`});
-  }
-}
-
-function validatePassword(password: string) {
-  if (password.length < 8) {
-    throw {name: DATA_VALIDATION_ERROR, message: 'Password should be more than 8 characters long'};
-  }
-}
-
-function validateRequired(...fields) {
-  if (fields.some(field => !field)) {
-    throw {name: DATA_VALIDATION_ERROR, message: 'Missing fields'};
-  }
 }
 

@@ -144,19 +144,19 @@ describe('authorized.ts', () => {
       sinon.assert.calledOnce(next as sinon.SinonStub);
     });
 
-    it('should call next when role: admin, roleTo: manager', async () => {
+    it('should call next when role: admin, roleTo: owner', async () => {
       res.locals.uid = 'randomId';
       res.locals.role = Roles.admin;
       req.params.id = testUid;
-      req.body = {role: Roles.manager};
+      req.body = {role: Roles.owner};
 
       await isAuthorized({hasRole: UserManagerRoles})(req as Request, res as Response, next);
       sinon.assert.calledOnce(next as sinon.SinonStub);
     });
 
-    it('should return 403 when allowUser: true, role: manager, roleTo: admin', () => {
+    it('should return 403 when allowUser: true, role: owner, roleTo: admin', () => {
       res.locals.uid = 'randomId';
-      res.locals.role = Roles.manager;
+      res.locals.role = Roles.owner;
       req.params.id = testUid;
       req.body = {role: Roles.admin};
 

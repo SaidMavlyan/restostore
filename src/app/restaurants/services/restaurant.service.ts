@@ -4,9 +4,8 @@ import { Observable } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
-import { convertDocs, convertSnap, convertSnaps } from '../../services/utils';
+import { convertDocs, convertSnap } from '../../services/utils';
 import { Restaurant } from '../models/restaurant';
-import { Review } from '../models/review';
 import { RestaurantsQueryParams } from '../models/restaurants-query-params';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
@@ -94,18 +93,5 @@ export class RestaurantService {
                .finally(() => {
                  this.loaderService.hide();
                });
-  }
-
-  getRatings(id: string): Observable<Review[]> {
-    this.loaderService.show();
-    return this.db.collection(`restaurants/${id}/ratings`)
-               .snapshotChanges()
-               .pipe(
-                 map(snaps => convertSnaps<Review>(snaps)),
-                 catchError(this.errorHandler.onHttpError),
-                 finalize(() => {
-                   this.loaderService.hide();
-                 })
-               );
   }
 }

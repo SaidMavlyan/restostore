@@ -6,6 +6,7 @@ export interface Restaurant {
   name: string;
   photo: string;
   avgRating: number;
+  numRatings: number;
   ratings: Review[];
 }
 

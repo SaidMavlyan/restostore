@@ -3,6 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RestaurantService } from '../services/restaurant.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Review } from '../models/review';
+import { Restaurant } from '../models/restaurant';
+import { UserService } from '../../users/services/user.service';
+import { NotifierService } from '../../services/notifier.service';
+import { ReviewService } from '../services/review.service';
 
 const TEXT_MAX_LEN = 500;
 const SORTABLE_DATE = 'YYYY-MM-DD';
@@ -14,28 +18,33 @@ const SORTABLE_DATE = 'YYYY-MM-DD';
 })
 export class ReviewDialogComponent implements OnInit {
 
-  review: Review;
+  review: Partial<Review>;
   form: FormGroup;
   isEditing = false;
+  isSaving = false;
+  restaurant: Restaurant;
 
   constructor(private fb: FormBuilder,
               private rs: RestaurantService,
+              private reviewService: ReviewService,
+              private notifierService: NotifierService,
+              private userService: UserService,
               private dialogRef: MatDialogRef<ReviewDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) review: Review) {
-    if (review.userId) {
-      this.isEditing = true;
-    }
+              @Inject(MAT_DIALOG_DATA) data: { restaurant: Restaurant, review: Review }) {
 
-    this.review = review;
+    this.restaurant = data.restaurant;
+    this.review = {};
+
+    if (data.review?.id) {
+      this.isEditing = true;
+      this.review = data.review;
+    }
   }
 
   ngOnInit() {
     this.form = this.fb.group({
-      userId: [this.review.userId],
-      // date: [this.review.date ? moment(this.review.date, SORTABLE_DATE) : moment()],
-      // time: [this.review.time || moment().format('HH:mm')],
-      // description: [this.review.description || '', [Validators.required, Validators.maxLength(TEXT_MAX_LEN)]],
-      text: [this.review.text || undefined, [Validators.required, Validators.maxLength(TEXT_MAX_LEN)]],
+      rating: [this.review.rating || undefined, [Validators.required]],
+      comment: [this.review.comment || undefined, [Validators.required, Validators.maxLength(TEXT_MAX_LEN)]],
     });
   }
 
@@ -45,33 +54,38 @@ export class ReviewDialogComponent implements OnInit {
     }
 
     switch (field) {
-      case 'description':
+      case 'comment':
         return this.form.controls.description.hasError('maxlength') ?
           `Description should be at most ${TEXT_MAX_LEN} characters` : '';
-      case 'name':
-        return this.form.controls.name.hasError('maxlength') ?
-          `Name should be at most ${TEXT_MAX_LEN} characters` : '';
       default:
         return 'Please enter correct value';
     }
   }
 
-  create() {
-    // this.rs.create(this.prepareForm(this.form.value))
-    //     .then(() => this.close());
+  async save(isEditing: boolean) {
+    this.isSaving = true;
+
+    try {
+
+      if (isEditing) {
+        // await this.rs.updateReview(this.review.id, data);
+      } else {
+        await this.reviewService.addReview(this.restaurant.id, this.form.value);
+      }
+
+      this.close(true);
+    } catch (e) {
+      this.notifierService.error(e);
+    } finally {
+      this.isSaving = false;
+    }
   }
 
-  update() {
-    // this.rs.update(this.review.userId, this.prepareForm(this.form.value))
-    //     .then(() => this.close());
-  }
-
-  close() {
-    this.dialogRef.close();
+  close(status = false) {
+    this.dialogRef.close(status);
   }
 
   prepareForm(form: any) {
     return {...form, date: form.date.format(SORTABLE_DATE)};
   }
-
 }

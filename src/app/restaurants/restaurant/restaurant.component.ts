@@ -8,6 +8,9 @@ import { RestaurantDeleteDialogComponent } from '../restaurant-delete-dialog/res
 import { mergeMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
 import { placeholderImage } from '../../const/util';
+import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
+import { Review } from '../models/review';
+import { ReviewService } from '../services/review.service';
 
 @Component({
   selector: 'app-restaurant',
@@ -18,11 +21,12 @@ export class RestaurantComponent implements OnInit {
 
   restaurant: Restaurant;
   placeholder = placeholderImage;
-  // ratings: Review[];
+  reviews: Review[];
   dialogConfig = new MatDialogConfig();
 
   constructor(private route: ActivatedRoute,
               private router: Router,
+              private reviewService: ReviewService,
               private dialog: MatDialog,
               private rs: RestaurantService) {
     this.dialogConfig.width = '400px';
@@ -41,11 +45,20 @@ export class RestaurantComponent implements OnInit {
         }
       })).subscribe((restaurant: Restaurant) => {
       this.restaurant = restaurant;
+      this.getReviews();
     });
   }
 
-  addRating() {
+  addReview() {
+    this.dialogConfig.data = {restaurant: this.restaurant};
+    this.dialog.open(ReviewDialogComponent, this.dialogConfig);
+  }
 
+  getReviews() {
+    this.reviewService.getRatings(this.restaurant.id)
+        .subscribe(reviews => {
+          this.reviews = reviews;
+        });
   }
 
   editRestaurant() {

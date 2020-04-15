@@ -1,1 +1,33 @@
-<p>review-dialog works!</p>
+<h2 mat-dialog-title>{{isEditing ? "Edit Review" : "Add Review"}}</h2>
+<mat-dialog-content [formGroup]="form">
+
+  <mat-form-field>
+    <textarea formControlName="comment"
+              matInput
+              placeholder="Comment"
+              required></textarea>
+    <mat-error *ngIf="form.controls.comment.invalid">{{getValidationMessage('comment')}}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input formControlName="rating"
+           matInput
+           placeholder="Rating"
+           required
+           type="number">
+    <mat-error *ngIf="form.controls.rating.invalid">{{getValidationMessage('rating')}}</mat-error>
+  </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center">
+  <button (click)="close()" class="mat-raised-button">
+    Close
+  </button>
+
+  <button (click)="save(isEditing)"
+          [disabled]="form.invalid || isSaving"
+          class="mat-raised-button mat-primary">
+    {{isEditing ? "Update" : "Add"}}
+  </button>
+</mat-dialog-actions>

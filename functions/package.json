@@ -8,7 +8,7 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "mocha -r ts-node/register src/**/*.spec.ts --timeout 5000 --watch --watch-extensions ts"
+    "test": "mocha -r ts-node/register src/*.spec.ts src/**/*.spec.ts --timeout 5000 --watch --watch-extensions ts"
   },
   "engines": {
     "node": "8"

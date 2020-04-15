@@ -124,14 +124,14 @@ class UserTestsAsAdmin {
 }
 
 @suite
-class UserTestsAsManager {
+class UserTestsAsOwner {
   @test
-  async 'Manager can:'() {
+  async 'Owner can:'() {
   }
 
   @test
   async '* not create a user'() {
-    const {db} = authToDB('manager');
+    const {db} = authToDB('owner');
     const user = generateUser();
 
     await assertFails(db.collection(collections.users).add(user));
@@ -139,7 +139,7 @@ class UserTestsAsManager {
 
   @test
   async '* not read users'() {
-    const {db} = authToDB('manager');
+    const {db} = authToDB('owner');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
 
@@ -149,7 +149,7 @@ class UserTestsAsManager {
 
   @test
   async '* not read individual user'() {
-    const {db} = authToDB('manager');
+    const {db} = authToDB('owner');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
 
@@ -159,7 +159,7 @@ class UserTestsAsManager {
 
   @test
   async '* not update user'() {
-    const {db} = authToDB('manager');
+    const {db} = authToDB('owner');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
 
@@ -169,7 +169,7 @@ class UserTestsAsManager {
 
   @test
   async '* not delete user'() {
-    const {db} = authToDB('manager');
+    const {db} = authToDB('owner');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
 

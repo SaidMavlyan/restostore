@@ -1,7 +1,8 @@
 export interface Review {
-  dateOfVisit: string;
-  timestamp: string;
-  text: string;
-  rating: number;
+  id: string;
   userId: string;
+  comment: string;
+  rating: number;
+  // dateOfVisit: string;
+  // timestamp: string;
 }

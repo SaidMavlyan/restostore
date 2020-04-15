@@ -3,12 +3,12 @@ import { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
 import 'mocha';
 import * as sinon from 'sinon';
-import { create, getUsers, patch, remove } from './controller';
-import { Roles } from './roles';
-import { signIn } from './utils';
+import { create, getUsers, patch, remove } from './users.controller';
+import { Roles } from '../roles';
+import { signIn } from '../utils';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
-describe('controller.ts', async function () {
+describe.skip('user.controller.ts', async function() {
   let req: Partial<Request>;
   let res: Partial<Response>;
   const email = 'testEmail@example.com';
@@ -151,7 +151,7 @@ describe('controller.ts', async function () {
           uid: `test${i}`,
           displayName: `testName ${i}`,
           email: `test${i}@example.com`,
-          role: (i % 2) ? Roles.manager : Roles.user
+          role: (i % 2) ? Roles.owner : Roles.user
         });
       }
     });
