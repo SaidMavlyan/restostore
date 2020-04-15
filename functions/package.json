@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "lint": "tslint --project tsconfig.json src/**/*.ts",
+    "lint": "tslint --exclude src/**/*.spec.ts --project tsconfig.json src/**/*.ts",
     "build": "tsc",
     "serve": "npm run build && env GOOGLE_APPLICATION_CREDENTIALS=\"../firebase-service-key.private.json\" firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",

@@ -1,21 +1,17 @@
 <h2 mat-dialog-title>{{isEditing ? "Edit Review" : "Add Review"}}</h2>
 <mat-dialog-content [formGroup]="form">
 
+  <app-rating-stars (ratingChange)="form.controls.rating.setValue($event)" [isInput]="true"
+                    [rating]="form.controls.rating.value"
+                    [showNumberRating]="false"
+  ></app-rating-stars>
+
   <mat-form-field>
     <textarea formControlName="comment"
               matInput
               placeholder="Comment"
               required></textarea>
     <mat-error *ngIf="form.controls.comment.invalid">{{getValidationMessage('comment')}}</mat-error>
-  </mat-form-field>
-
-  <mat-form-field>
-    <input formControlName="rating"
-           matInput
-           placeholder="Rating"
-           required
-           type="number">
-    <mat-error *ngIf="form.controls.rating.invalid">{{getValidationMessage('rating')}}</mat-error>
   </mat-form-field>
 
 </mat-dialog-content>

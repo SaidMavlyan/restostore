@@ -1,32 +1,50 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-rating-stars',
   templateUrl: './rating-stars.component.html',
   styleUrls: ['./rating-stars.component.scss']
 })
-export class RatingStarsComponent implements OnInit {
+export class RatingStarsComponent implements AfterViewInit {
 
-  fullStars = [];
-  emptyStars = [];
-  halfStar = false;
+  ratingVal: number;
+  stars: Array<any>;
   @Input() showNumberRating = true;
+  @Input() isInput = false;
   @Input() numberOfStars = 5;
-  private pRating: number;
-
-  get rating() {
-    return this.pRating;
-  }
-
-  @Input() set rating(value: number) {
-    this.fullStars = Array(Math.trunc(value));
-    this.emptyStars = Array(this.numberOfStars - Math.trunc(value));
-    this.pRating = value;
-  }
+  @Output() ratingChange = new EventEmitter<number>();
+  @ViewChild('ratingStars') elem;
 
   constructor() {
+    this.stars = Array(this.numberOfStars);
   }
 
-  ngOnInit(): void {
+  @Input() set rating(value) {
+    this.ratingVal = value;
+    if (this.elem) {
+      this.renderStars();
+    }
+  }
+
+  ngAfterViewInit() {
+    if (this.isInput) {
+      this.addListeners();
+    }
+    this.renderStars();
+  }
+
+  renderStars() {
+    this.elem.nativeElement.querySelectorAll('.iStar').forEach((el, i) => {
+      el.innerHTML = i + 1 > this.ratingVal ? 'star_border' : 'star';
+    });
+  }
+
+  addListeners() {
+    this.elem.nativeElement.querySelectorAll('.iStar')
+        .forEach((el, i) => {
+          el.addEventListener('click', () => {
+            this.ratingChange.emit(i + 1);
+          });
+        });
   }
 }

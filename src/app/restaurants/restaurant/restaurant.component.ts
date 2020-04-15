@@ -47,11 +47,13 @@ export class RestaurantComponent implements OnInit {
   }
 
   addReview() {
+    this.dialogConfig.autoFocus = false;
     this.dialogConfig.data = {restaurant: this.restaurant};
     this.dialog.open(ReviewDialogComponent, this.dialogConfig);
   }
 
   editRestaurant() {
+    this.dialogConfig.autoFocus = false;
     this.dialogConfig.data = this.restaurant;
     this.dialog.open(RestaurantDialogComponent, this.dialogConfig);
   }
