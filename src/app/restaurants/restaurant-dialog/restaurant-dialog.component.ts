@@ -87,7 +87,7 @@ export class RestaurantDialogComponent implements OnInit {
       if (isEditing) {
         await this.rs.update(this.restaurant.id, data);
       } else {
-        await this.rs.create({...data, avgRating: 0, numRatings: 0});
+        await this.rs.create({...data, avgRating: 0, numRatings: 0, pendingReplies: 0});
       }
 
       this.close(true);

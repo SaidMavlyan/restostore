@@ -3,7 +3,7 @@ import { isAuthenticated } from './authenticated';
 import { isAuthorized } from './authorized';
 import { create, get, getUsers, patch, remove, resetPassword } from './controllers/users.controller';
 import { UserManagerRoles } from './roles';
-import { createReview } from './controllers/review.controller';
+import { createReview, getReviews } from './controllers/review.controller';
 
 export function routesConfig(app: Application) {
   userRoutes(app);
@@ -12,11 +12,14 @@ export function routesConfig(app: Application) {
 
 function reviewRoutes(app: Application) {
 
-  app.post('/reviews', [
+  app.post('/restaurants/:restaurantId/reviews', [
     isAuthenticated,
     createReview
   ]);
 
+  app.get('/restaurants/:restaurantId/reviews', [
+    getReviews
+  ]);
 }
 
 function userRoutes(app: Application) {

@@ -6,12 +6,20 @@
                     [showNumberRating]="false"
   ></app-rating-stars>
 
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <textarea formControlName="comment"
               matInput
               placeholder="Comment"
               required></textarea>
     <mat-error *ngIf="form.controls.comment.invalid">{{getValidationMessage('comment')}}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input [matDatepicker]="datePicker" formControlName="dateOfVisit"
+           matInput placeholder="Date of visit"
+           required>
+    <mat-datepicker-toggle [for]="datePicker" matSuffix></mat-datepicker-toggle>
+    <mat-datepicker #datePicker></mat-datepicker>
   </mat-form-field>
 
 </mat-dialog-content>

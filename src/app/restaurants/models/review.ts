@@ -1,8 +1,10 @@
 export interface Review {
   id: string;
   userId: string;
+  restaurantId: string;
   comment: string;
   rating: number;
-  // dateOfVisit: string;
-  // timestamp: string;
+  dateOfVisit: string;
+  createdAt: string;
+  reply: object;
 }

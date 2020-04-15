@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ReviewService {
 
-  private baseUrl = `${environment.baseUrl}/api/reviews`;
+  private baseUrl = `${environment.baseUrl}/api`;
 
   constructor(private db: AngularFirestore,
               private http: HttpClient,
@@ -24,19 +24,16 @@ export class ReviewService {
 
   addReview(restaurantId, review: Review) {
     this.loaderService.show();
-    return this.http.post<{ uid: string }>(`${this.baseUrl}`, {restaurantId, ...review}).pipe(
-      map(result => {
-        console.log('result');
-        return result;
-      }),
-      catchError(this.errorHandler.onHttpError),
-      finalize(() => this.loaderService.hide())
-    ).toPromise();
+    return this.http.post<{ uid: string }>(`${this.baseUrl}/restaurants/${restaurantId}/reviews`, review)
+               .pipe(
+                 catchError(this.errorHandler.onHttpError),
+                 finalize(() => this.loaderService.hide())
+               ).toPromise();
   }
 
   getReviews(restaurantId: string): Observable<Review[]> {
     this.loaderService.show();
-    return this.db.collection(`restaurants/${restaurantId}/ratings`)
+    return this.db.collection(`restaurants/${restaurantId}/reviews`)
                .snapshotChanges()
                .pipe(
                  map(snaps => {

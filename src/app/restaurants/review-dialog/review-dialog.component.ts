@@ -7,6 +7,7 @@ import { Restaurant } from '../models/restaurant';
 import { UserService } from '../../users/services/user.service';
 import { NotifierService } from '../../services/notifier.service';
 import { ReviewService } from '../services/review.service';
+import * as moment from 'moment';
 
 const TEXT_MAX_LEN = 500;
 const SORTABLE_DATE = 'YYYY-MM-DD';
@@ -43,12 +44,17 @@ export class ReviewDialogComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      rating: [this.review.rating || undefined, [Validators.required]],
+      rating: [this.review.rating || 1, [Validators.required]],
       comment: [this.review.comment || undefined, [Validators.required, Validators.maxLength(TEXT_MAX_LEN)]],
+      dateOfVisit: [this.review.dateOfVisit ? moment(this.review.dateOfVisit, SORTABLE_DATE) : moment()],
     });
   }
 
   getValidationMessage(field: string) {
+    if (field === 'rating') {
+      return 'You must rate between 1 and 5';
+    }
+
     if (this.form.controls[field].hasError('required')) {
       return 'You must enter a value';
     }
@@ -70,7 +76,7 @@ export class ReviewDialogComponent implements OnInit {
       if (isEditing) {
         // await this.rs.updateReview(this.review.id, data);
       } else {
-        await this.reviewService.addReview(this.restaurant.id, this.form.value);
+        await this.reviewService.addReview(this.restaurant.id, this.prepareForm(this.form.value));
       }
 
       this.close(true);
@@ -86,6 +92,6 @@ export class ReviewDialogComponent implements OnInit {
   }
 
   prepareForm(form: any) {
-    return {...form, date: form.date.format(SORTABLE_DATE)};
+    return {...form, dateOfVisit: form.dateOfVisit.format(SORTABLE_DATE)};
   }
 }

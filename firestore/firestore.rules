@@ -31,13 +31,14 @@ service cloud.firestore {
     }
 
     match /restaurants/{restaurant} {
-      match /ratings/{rating} {
-        allow read: if request.auth != null;
-        allow write: if request.auth.uid == request.resource.data.userId;
+      match /reviews/{review} {
+        allow read;
+        allow create: if createBySelf() || isAdmin();
+        allow update: if updateBySelf() || isAdmin();
+        allow delete: if deleteBySelf() || isAdmin();
       }
 
       allow read;
-  //  allow read: if readBySelf() || isAdmin();
       allow create: if createBySelf() || isAdmin();
       allow update: if updateBySelf() || isAdmin();
       allow delete: if deleteBySelf() || isAdmin();
