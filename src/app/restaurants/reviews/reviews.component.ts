@@ -6,6 +6,7 @@ import { ReviewDeleteDialogComponent } from '../review-delete-dialog/review-dele
 import { BehaviorSubject } from 'rxjs';
 import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
 import { ReviewReplyDialogComponent } from '../review-reply-dialog/review-reply-dialog.component';
+import { ReplyDeleteDialogComponent } from '../reply-delete-dialog/reply-delete-dialog.component';
 
 @Component({
   selector: 'app-reviews',
@@ -47,7 +48,8 @@ export class ReviewsComponent implements OnInit {
   }
 
   deleteReply(review: Review) {
-    console.log('will delete reply for', review);
+    this.dialogConfig.data = review;
+    this.dialog.open(ReplyDeleteDialogComponent, this.dialogConfig);
   }
 
 }

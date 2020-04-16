@@ -49,3 +49,38 @@ export async function setReply(req: Request, res: Response) {
     return handleError(res, err);
   }
 }
+
+export async function deleteReply(req: Request, res: Response) {
+  try {
+    const {restaurantId, reviewId} = req.params;
+    const {uid, role} = res.locals;
+
+    const restaurantRef = admin.firestore().doc(`restaurants/${restaurantId}`);
+    const reviewRef = restaurantRef.collection(`reviews`).doc(reviewId);
+
+    await admin.firestore().runTransaction(async transaction => {
+      const resSnap = await transaction.get(restaurantRef);
+      const revSnap = await transaction.get(reviewRef);
+
+      const restaurant = resSnap.data() as Restaurant;
+      const review = revSnap.data() as Review;
+
+      if (role !== Roles.admin && restaurant.ownerId !== uid) {
+        throw {name: 'Auth', message: 'Unauthorized to reply'};
+      }
+
+      if (review.reply) {
+        transaction.update(restaurantRef, {
+          pendingReplies: restaurant.pendingReplies + 1
+        });
+      }
+
+      return transaction.update(reviewRef, {reply: null});
+    });
+
+    res.status(204);
+    return res.send({});
+  } catch (err) {
+    return handleError(res, err);
+  }
+}

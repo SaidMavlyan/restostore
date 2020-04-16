@@ -97,6 +97,18 @@ export class ReviewService {
                  catchError(this.errorHandler.onHttpError),
                  finalize(() => this.loaderService.hide())
                ).toPromise();
+  }
 
+  async deleteReply(review: Review) {
+    this.loaderService.show();
+    return this.http.delete(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}/replies`)
+               .pipe(
+                 map(result => {
+                   review.reply = null;
+                   return result;
+                 }),
+                 catchError(this.errorHandler.onHttpError),
+                 finalize(() => this.loaderService.hide())
+               ).toPromise();
   }
 }

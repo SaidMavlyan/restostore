@@ -4,7 +4,7 @@ import { isAuthorized } from './authorized';
 import { create, get, getUsers, patch, remove, resetPassword } from './controllers/users.controller';
 import { Roles, UserManagerRoles } from './roles';
 import { createReview, deleteReview, getReviews, patchReview } from './controllers/review.controller';
-import { setReply } from './controllers/replies.controller';
+import { deleteReply, setReply } from './controllers/replies.controller';
 
 export function routesConfig(app: Application) {
   userRoutes(app);
@@ -17,6 +17,12 @@ function replyRoutes(app: Application) {
     isAuthenticated,
     isAuthorized({hasRole: [Roles.admin, Roles.owner]}),
     setReply
+  ]);
+
+  app.delete('/restaurants/:restaurantId/reviews/:reviewId/replies', [
+    isAuthenticated,
+    isAuthorized({hasRole: [Roles.admin, Roles.owner]}),
+    deleteReply
   ]);
 }
 

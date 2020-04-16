@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Delete Review</h2>
+<mat-dialog-content>
+  Are you sure you want to delete this reply:
+  <strong>"{{review.reply?.text}}"</strong>?
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center">
+  <button (click)="close()" class="mat-raised-button">
+    Close
+  </button>
+
+  <button (click)="delete()" [disabled]="isDeleting" class="mat-raised-button mat-warn">
+    Delete
+  </button>
+</mat-dialog-actions>
