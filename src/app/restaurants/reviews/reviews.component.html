@@ -1,5 +1,6 @@
 <div fxFill fxLayout="row wrap" fxLayoutAlign="center center">
-  <div *ngFor="let review of reviews" class="review" fxFlex="51" fxFlex.xs="100">
+
+  <div *ngFor="let review of (reviews$ | async)" class="review" fxFlex="51" fxFlex.xs="100">
     <mat-card>
       <app-rating-stars [rating]="review.rating" [showNumberRating]="false"></app-rating-stars>
       <mat-divider></mat-divider>

@@ -67,7 +67,7 @@ export async function createReview(req: Request, res: Response) {
     });
 
     res.status(201);
-    return res.send(entry);
+    return res.send({id: reviewDoc.id, restaurantId, ...entry});
   } catch (err) {
     return handleError(res, err);
   }

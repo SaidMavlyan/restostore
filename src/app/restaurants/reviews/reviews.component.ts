@@ -3,6 +3,7 @@ import { ReviewService } from '../services/review.service';
 import { Review } from '../models/review';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ReviewDeleteDialogComponent } from '../review-delete-dialog/review-delete-dialog.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-reviews',
@@ -12,8 +13,8 @@ import { ReviewDeleteDialogComponent } from '../review-delete-dialog/review-dele
 export class ReviewsComponent implements OnInit {
 
   @Input() restaurantId: string;
-  reviews: Review[];
   dialogConfig = new MatDialogConfig();
+  reviews$: BehaviorSubject<Review[]>;
 
   constructor(private reviewService: ReviewService,
               private dialog: MatDialog,
@@ -22,10 +23,9 @@ export class ReviewsComponent implements OnInit {
 
   ngOnInit(): void {
     this.reviewService.getReviews(this.restaurantId, {limit: 10, page: 0})
-        .subscribe(result => {
-            this.reviews = result.reviews;
-          }
-        );
+        .subscribe();
+
+    this.reviews$ = this.reviewService.reviews$;
   }
 
   editReview(review: Review) {

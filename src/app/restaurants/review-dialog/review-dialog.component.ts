@@ -70,16 +70,17 @@ export class ReviewDialogComponent implements OnInit {
 
   async save(isEditing: boolean) {
     this.isSaving = true;
+    let result: Review;
 
     try {
 
       if (isEditing) {
-        // await this.rs.updateReview(this.review.id, data);
+        // result = await this.reviewService.updateReview(this.restaurant.id, this.prepareForm(this.form.value));
       } else {
-        await this.reviewService.addReview(this.restaurant.id, this.prepareForm(this.form.value));
+        result = await this.reviewService.addReview(this.restaurant.id, this.prepareForm(this.form.value));
       }
 
-      this.close(true);
+      this.dialogRef.close(result);
     } catch (e) {
       this.notifierService.error(e);
     } finally {
@@ -87,8 +88,8 @@ export class ReviewDialogComponent implements OnInit {
     }
   }
 
-  close(status = false) {
-    this.dialogRef.close(status);
+  close() {
+    this.dialogRef.close();
   }
 
   prepareForm(form: any) {
