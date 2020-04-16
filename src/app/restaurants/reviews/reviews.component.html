@@ -6,6 +6,17 @@
       <mat-form-field appearance="outline">
         <textarea disabled matInput>{{review.comment}}</textarea>
       </mat-form-field>
+
+      <mat-card-actions>
+        <div dir="rtl" fxLayout="row" fxLayoutGap="10px">
+          <button (click)="deleteReview(review)" color="primary" mat-mini-fab>
+            <mat-icon>delete_sweep</mat-icon>
+          </button>
+          <button (click)="editReview(review)" color="primary" mat-mini-fab>
+            <mat-icon>create</mat-icon>
+          </button>
+        </div>
+      </mat-card-actions>
     </mat-card>
   </div>
 </div>

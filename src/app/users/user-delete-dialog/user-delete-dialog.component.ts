@@ -29,7 +29,7 @@ export class UserDeleteDialogComponent {
     this.isDeleting = true;
     this.userService.delete(this.data.user)
         .subscribe(() => {
-          this.isDeleting = true;
+          this.isDeleting = false;
           if (this.isDeletingSelf) {
             this.onCurrentAccountDeletion(this.data.user.email);
             this.dialogRef.close();

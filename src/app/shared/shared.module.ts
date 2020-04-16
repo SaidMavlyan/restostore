@@ -30,6 +30,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { RatingStarsComponent } from './rating-stars/rating-stars.component';
 import { PageTitleComponent } from './page-title/page-title.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatBadgeModule } from '@angular/material/badge';
 
 export const MY_FORMATS = {
   parse: {
@@ -53,6 +54,7 @@ export const MY_FORMATS = {
     FlexModule,
     HttpClientModule,
     MatButtonModule,
+    MatBadgeModule,
     MatCardModule,
     MatChipsModule,
     MatDialogModule,
@@ -87,6 +89,7 @@ export const MY_FORMATS = {
     FlexModule,
     HttpClientModule,
     MatButtonModule,
+    MatBadgeModule,
     MatCardModule,
     MatChipsModule,
     MatNativeDateModule,

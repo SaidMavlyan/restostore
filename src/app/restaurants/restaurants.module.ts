@@ -9,6 +9,7 @@ import { RestaurantComponent } from './restaurant/restaurant.component';
 import { ReviewDialogComponent } from './review-dialog/review-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { ReviewDeleteDialogComponent } from './review-delete-dialog/review-delete-dialog.component';
 
 
 @NgModule({
@@ -19,11 +20,13 @@ import { ReviewsComponent } from './reviews/reviews.component';
     RestaurantComponent,
     ReviewDialogComponent,
     ReviewsComponent,
+    ReviewDeleteDialogComponent,
   ],
   entryComponents: [
     RestaurantDialogComponent,
     RestaurantDeleteDialogComponent,
     ReviewDialogComponent,
+    ReviewDeleteDialogComponent,
   ],
   imports: [
     CommonModule,

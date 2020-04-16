@@ -47,4 +47,12 @@ export class ReviewService {
                  finalize(() => this.loaderService.hide())
                );
   }
+
+  delete(review: Review) {
+    this.loaderService.show();
+    return this.http.delete(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}`).pipe(
+      catchError(this.errorHandler.onHttpError),
+      finalize(() => this.loaderService.hide())
+    );
+  }
 }

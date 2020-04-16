@@ -32,10 +32,7 @@ service cloud.firestore {
 
     match /restaurants/{restaurant} {
       match /reviews/{review} {
-        allow read;
-        allow create: if createBySelf() || isAdmin();
-        allow update: if updateBySelf() || isAdmin();
-        allow delete: if deleteBySelf() || isAdmin();
+        allow read, write: if request.auth.uid == uid;
       }
 
       allow read;

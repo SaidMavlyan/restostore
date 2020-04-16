@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ReviewService } from '../services/review.service';
 import { Review } from '../models/review';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ReviewDeleteDialogComponent } from '../review-delete-dialog/review-delete-dialog.component';
 
 @Component({
   selector: 'app-reviews',
@@ -11,8 +13,10 @@ export class ReviewsComponent implements OnInit {
 
   @Input() restaurantId: string;
   reviews: Review[];
+  dialogConfig = new MatDialogConfig();
 
-  constructor(private reviewService: ReviewService
+  constructor(private reviewService: ReviewService,
+              private dialog: MatDialog,
   ) {
   }
 
@@ -22,5 +26,14 @@ export class ReviewsComponent implements OnInit {
             this.reviews = result.reviews;
           }
         );
+  }
+
+  editReview(review: Review) {
+    console.log('will edit', review);
+  }
+
+  deleteReview(review: Review) {
+    this.dialogConfig.data = review;
+    this.dialog.open(ReviewDeleteDialogComponent, this.dialogConfig);
   }
 }

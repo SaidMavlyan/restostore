@@ -89,7 +89,7 @@ export async function getReviews(req: Request, res: Response) {
     const totalSize = totalDocsRef.size;
 
     const docsSnap = await initDocsRef.offset(pageSize * page).limit(pageSize).get();
-    const reviews = await docsSnap.docs.map(doc => doc.data());
+    const reviews = await docsSnap.docs.map(doc => ({restaurantId, id: doc.id, ...doc.data()}));
 
     res.status(200);
 
@@ -101,3 +101,37 @@ export async function getReviews(req: Request, res: Response) {
     return handleError(res, err);
   }
 }
+
+export async function deleteReview(req: Request, res: Response) {
+  try {
+    const {restaurantId, reviewId} = req.params;
+
+    const restaurantRef = admin.firestore().doc(`restaurants/${restaurantId}`);
+    const reviewRef = restaurantRef.collection(`reviews`).doc(reviewId);
+
+    await admin.firestore().runTransaction(async transaction => {
+      const resSnap = await transaction.get(restaurantRef);
+      const revSnap = await transaction.get(reviewRef);
+
+      const restaurant = resSnap.data() as Restaurant;
+      const review = revSnap.data() as Review;
+
+      const newAverage =
+        (restaurant.numRatings * restaurant.avgRating - review.rating) /
+        (restaurant.numRatings - 1);
+
+      transaction.update(restaurantRef, {
+        numRatings: restaurant.numRatings - 1,
+        pendingReplies: review.reply === null ? restaurant.pendingReplies - 1 : restaurant.pendingReplies,
+        avgRating: newAverage
+      });
+
+      return transaction.delete(reviewRef);
+    });
+    res.status(204);
+    return res.send({});
+  } catch (err) {
+    return handleError(res, err);
+  }
+}
+

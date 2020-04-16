@@ -19,6 +19,15 @@
             Rate
           </button>
 
+          <button (click)="replyToReviews()" color="primary"
+                  mat-flat-button
+                  matBadge="{{restaurant.pendingReplies}}"
+                  matBadgeColor="warn"
+                  matBadgeDescription="Unreplied comments">
+            <mat-icon>reply</mat-icon>
+            Reply
+          </button>
+
           <button mat-flat-button color="primary" (click)="editRestaurant()">
             <mat-icon>create</mat-icon>
             Edit
