@@ -16,8 +16,27 @@
           <button (click)="editReview(review)" color="primary" mat-mini-fab>
             <mat-icon>create</mat-icon>
           </button>
+          <button (click)="replyToReview(review)" *ngIf="!review.reply" color="primary" mat-mini-fab>
+            <mat-icon>reply</mat-icon>
+          </button>
         </div>
       </mat-card-actions>
+
+      <div *ngIf="review.reply" class="reply">
+        <mat-form-field appearance="outline">
+          <textarea disabled matInput>{{review?.reply?.text}}</textarea>
+        </mat-form-field>
+        <mat-card-actions>
+          <div dir="rtl" fxLayout="row" fxLayoutGap="10px">
+            <button (click)="deleteReply(review)" color="primary" mat-mini-fab>
+              <mat-icon>delete_sweep</mat-icon>
+            </button>
+            <button (click)="editReply(review)" color="primary" mat-mini-fab>
+              <mat-icon>create</mat-icon>
+            </button>
+          </div>
+        </mat-card-actions>
+      </div>
     </mat-card>
   </div>
 </div>

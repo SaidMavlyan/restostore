@@ -1,27 +1,8 @@
 import { Request, Response } from 'express';
 import { handleError, validateRating, validateRequired } from '../utils';
 import * as admin from 'firebase-admin';
-
-interface Restaurant {
-  id: string;
-  ownerId: string;
-  name: string;
-  photo: string;
-  avgRating: number;
-  numRatings: number;
-  pendingReplies: number;
-  ratings: Review[];
-}
-
-interface Review {
-  userId: string;
-  comment: string;
-  rating: number;
-  dateOfVisit: string;
-  createdAt: any;
-  reply: object;
-  restaurantId?: string;
-}
+import { Review } from '../interfaces/review';
+import { Restaurant } from '../interfaces/restaurant';
 
 export async function createReview(req: Request, res: Response) {
   try {

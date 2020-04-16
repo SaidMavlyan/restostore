@@ -61,8 +61,8 @@ export class ReviewDialogComponent implements OnInit {
 
     switch (field) {
       case 'comment':
-        return this.form.controls.description.hasError('maxlength') ?
-          `Description should be at most ${TEXT_MAX_LEN} characters` : '';
+        return this.form.controls.comment.hasError('maxlength') ?
+          `Comment should be at most ${TEXT_MAX_LEN} characters` : '';
       default:
         return 'Please enter correct value';
     }

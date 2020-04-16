@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { catchError, finalize, map } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
-import { Review } from '../models/review';
+import { Reply, Review } from '../models/review';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
@@ -86,4 +86,17 @@ export class ReviewService {
     );
   }
 
+  async addReply(review: Review, reply: Reply) {
+    this.loaderService.show();
+    return this.http.post<Reply>(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}/replies`, reply)
+               .pipe(
+                 map(result => {
+                   review.reply = result;
+                   return result;
+                 }),
+                 catchError(this.errorHandler.onHttpError),
+                 finalize(() => this.loaderService.hide())
+               ).toPromise();
+
+  }
 }

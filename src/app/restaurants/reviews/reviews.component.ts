@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ReviewDeleteDialogComponent } from '../review-delete-dialog/review-delete-dialog.component';
 import { BehaviorSubject } from 'rxjs';
 import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
+import { ReviewReplyDialogComponent } from '../review-reply-dialog/review-reply-dialog.component';
 
 @Component({
   selector: 'app-reviews',
@@ -20,6 +21,7 @@ export class ReviewsComponent implements OnInit {
   constructor(private reviewService: ReviewService,
               private dialog: MatDialog,
   ) {
+    this.dialogConfig.width = '400px';
   }
 
   ngOnInit(): void {
@@ -37,5 +39,18 @@ export class ReviewsComponent implements OnInit {
   deleteReview(review: Review) {
     this.dialogConfig.data = review;
     this.dialog.open(ReviewDeleteDialogComponent, this.dialogConfig);
+  }
+
+  replyToReview(review: Review) {
+    this.dialogConfig.data = {review};
+    this.dialog.open(ReviewReplyDialogComponent, this.dialogConfig);
+  }
+
+  editReply(review: Review) {
+    console.log('edit reply', review);
+  }
+
+  deleteReply(review: Review) {
+    console.log('will delete reply for', review);
   }
 }
