@@ -19,7 +19,7 @@
             Rate
           </button>
 
-          <button (click)="replyToReviews()" color="primary"
+          <button *ngIf="restaurant.pendingReplies" (click)="replyToReviews()" color="primary"
                   mat-flat-button
                   matBadge="{{restaurant.pendingReplies}}"
                   matBadgeColor="warn"

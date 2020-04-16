@@ -154,9 +154,15 @@ export async function deleteReview(req: Request, res: Response) {
       const restaurant = resSnap.data() as Restaurant;
       const review = revSnap.data() as Review;
 
-      const newAverage =
-        (restaurant.numRatings * restaurant.avgRating - review.rating) /
-        (restaurant.numRatings - 1);
+      let newAverage: number;
+
+      if (restaurant.numRatings === 1) {
+        newAverage = 0;
+      } else {
+        newAverage =
+          (restaurant.numRatings * restaurant.avgRating - review.rating) /
+          (restaurant.numRatings - 1);
+      }
 
       transaction.update(restaurantRef, {
         numRatings: restaurant.numRatings - 1,
