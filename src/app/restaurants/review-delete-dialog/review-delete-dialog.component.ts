@@ -23,7 +23,7 @@ export class ReviewDeleteDialogComponent {
 
   delete() {
     this.isDeleting = true;
-    this.reviewService.delete(this.review)
+    this.reviewService.deleteReview(this.review)
         .subscribe(() => {
           this.isDeleting = false;
           this.dialogRef.close(true);

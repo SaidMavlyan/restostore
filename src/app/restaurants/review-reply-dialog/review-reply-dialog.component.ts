@@ -58,17 +58,14 @@ export class ReviewReplyDialogComponent implements OnInit {
     }
   }
 
-  async save(isEditing: boolean) {
+  async save() {
     this.isSaving = true;
 
     try {
-      if (isEditing) {
-        // result = await this.reviewService.updateReply(review, reply);
-      } else {
-        await this.reviewService.addReply(this.review, this.form.value);
-      }
 
+      await this.reviewService.setReply(this.review, this.form.value);
       this.dialogRef.close(true);
+
     } catch (e) {
       this.notifierService.error(e);
     } finally {

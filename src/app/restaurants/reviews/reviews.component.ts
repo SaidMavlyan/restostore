@@ -41,16 +41,13 @@ export class ReviewsComponent implements OnInit {
     this.dialog.open(ReviewDeleteDialogComponent, this.dialogConfig);
   }
 
-  replyToReview(review: Review) {
+  setReply(review: Review) {
     this.dialogConfig.data = {review};
     this.dialog.open(ReviewReplyDialogComponent, this.dialogConfig);
-  }
-
-  editReply(review: Review) {
-    console.log('edit reply', review);
   }
 
   deleteReply(review: Review) {
     console.log('will delete reply for', review);
   }
+
 }

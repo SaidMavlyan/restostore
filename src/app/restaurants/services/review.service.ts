@@ -27,7 +27,7 @@ export class ReviewService {
     return this.http.post<Review>(`${this.baseUrl}/${restaurantId}/reviews`, review)
                .pipe(
                  map(result => {
-                   this.reviews$.next(this.reviews$.value.concat(result));
+                   this.reviews$.next([result, ...this.reviews$.value]);
                    return result;
                  }),
                  catchError(this.errorHandler.onHttpError),
@@ -74,7 +74,7 @@ export class ReviewService {
                ).toPromise();
   }
 
-  delete(review: Review) {
+  deleteReview(review: Review) {
     this.loaderService.show();
     return this.http.delete(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}`).pipe(
       map(result => {
@@ -86,7 +86,7 @@ export class ReviewService {
     );
   }
 
-  async addReply(review: Review, reply: Reply) {
+  async setReply(review: Review, reply: Reply) {
     this.loaderService.show();
     return this.http.post<Reply>(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}/replies`, reply)
                .pipe(

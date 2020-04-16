@@ -16,7 +16,7 @@
           <button (click)="editReview(review)" color="primary" mat-mini-fab>
             <mat-icon>create</mat-icon>
           </button>
-          <button (click)="replyToReview(review)" *ngIf="!review.reply" color="primary" mat-mini-fab>
+          <button (click)="setReply(review)" *ngIf="!review.reply" color="primary" mat-mini-fab>
             <mat-icon>reply</mat-icon>
           </button>
         </div>
@@ -31,7 +31,7 @@
             <button (click)="deleteReply(review)" color="primary" mat-mini-fab>
               <mat-icon>delete_sweep</mat-icon>
             </button>
-            <button (click)="editReply(review)" color="primary" mat-mini-fab>
+            <button (click)="setReply(review)" color="primary" mat-mini-fab>
               <mat-icon>create</mat-icon>
             </button>
           </div>
