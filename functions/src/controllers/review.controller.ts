@@ -33,12 +33,12 @@ export async function createReview(req: Request, res: Response) {
     validateRequired(restaurantId, rating, comment, dateOfVisit);
     validateRating(rating);
 
-    const restaurantDoc = admin.firestore().doc(`restaurants/${restaurantId}`);
-    const reviewDoc = restaurantDoc.collection(`reviews`).doc();
+    const restaurantRef = admin.firestore().doc(`restaurants/${restaurantId}`);
+    const reviewRef = restaurantRef.collection(`reviews`).doc();
 
     // todo: can be moved to cloud functions if execution time is long
     await admin.firestore().runTransaction(transaction => {
-      return transaction.get(restaurantDoc).then(doc => {
+      return transaction.get(restaurantRef).then(doc => {
         const data = doc.data() as Restaurant;
 
         const newAverage =
@@ -47,7 +47,7 @@ export async function createReview(req: Request, res: Response) {
 
         const pendingReplies = data.pendingReplies ? data.pendingReplies + 1 : 1;
 
-        transaction.update(restaurantDoc, {
+        transaction.update(restaurantRef, {
           numRatings: data.numRatings + 1,
           pendingReplies,
           avgRating: newAverage
@@ -62,12 +62,12 @@ export async function createReview(req: Request, res: Response) {
           createdAt: admin.firestore.FieldValue.serverTimestamp()
         };
 
-        return transaction.set(reviewDoc, entry);
+        return transaction.set(reviewRef, entry);
       });
     });
 
     res.status(201);
-    return res.send({id: reviewDoc.id, restaurantId, ...entry});
+    return res.send({id: reviewRef.id, restaurantId, ...entry});
   } catch (err) {
     return handleError(res, err);
   }
@@ -97,6 +97,44 @@ export async function getReviews(req: Request, res: Response) {
       totalSize,
       reviews
     });
+  } catch (err) {
+    return handleError(res, err);
+  }
+}
+
+export async function patchReview(req: Request, res: Response) {
+  try {
+    const {rating, comment, dateOfVisit} = req.body as Partial<Review>;
+    const {restaurantId, reviewId} = req.params;
+
+    validateRequired(reviewId, restaurantId, rating, comment, dateOfVisit);
+    validateRating(rating);
+
+    const restaurantRef = admin.firestore().doc(`restaurants/${restaurantId}`);
+    const reviewRef = restaurantRef.collection(`reviews`).doc(reviewId);
+
+    await admin.firestore().runTransaction(async transaction => {
+      const resSnap = await transaction.get(restaurantRef);
+      const revSnap = await transaction.get(reviewRef);
+
+      const restaurant = resSnap.data() as Restaurant;
+      const review = revSnap.data() as Review;
+
+      const newAverage =
+        (restaurant.numRatings * restaurant.avgRating - review.rating + rating) /
+        (restaurant.numRatings);
+
+      transaction.update(restaurantRef, {
+        avgRating: newAverage
+      });
+
+      return transaction.update(reviewRef, {rating, comment, dateOfVisit});
+    });
+
+    const updatedSnap = await reviewRef.get();
+
+    res.status(200);
+    return res.send({id: reviewId, restaurantId, ...updatedSnap.data()});
   } catch (err) {
     return handleError(res, err);
   }

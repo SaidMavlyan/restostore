@@ -36,7 +36,7 @@ export class ReviewDialogComponent implements OnInit {
     this.restaurant = data.restaurant;
     this.review = {};
 
-    if (data.review?.id) {
+    if (data.review && data.review.id) {
       this.isEditing = true;
       this.review = data.review;
     }
@@ -73,9 +73,8 @@ export class ReviewDialogComponent implements OnInit {
     let result: Review;
 
     try {
-
       if (isEditing) {
-        // result = await this.reviewService.updateReview(this.restaurant.id, this.prepareForm(this.form.value));
+        result = await this.reviewService.updateReview(this.prepareForm({...this.review, ...this.form.value}));
       } else {
         result = await this.reviewService.addReview(this.restaurant.id, this.prepareForm(this.form.value));
       }

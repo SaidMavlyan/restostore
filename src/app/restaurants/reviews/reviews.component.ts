@@ -4,6 +4,7 @@ import { Review } from '../models/review';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ReviewDeleteDialogComponent } from '../review-delete-dialog/review-delete-dialog.component';
 import { BehaviorSubject } from 'rxjs';
+import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
 
 @Component({
   selector: 'app-reviews',
@@ -29,7 +30,8 @@ export class ReviewsComponent implements OnInit {
   }
 
   editReview(review: Review) {
-    console.log('will edit', review);
+    this.dialogConfig.data = {review};
+    this.dialog.open(ReviewDialogComponent, this.dialogConfig);
   }
 
   deleteReview(review: Review) {

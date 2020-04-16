@@ -59,6 +59,21 @@ export class ReviewService {
                );
   }
 
+  updateReview(review: Partial<Review>) {
+    this.loaderService.show();
+    return this.http.patch<Review>(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}`, review)
+               .pipe(
+                 map(result => {
+                   const reviews = this.reviews$.value.filter(r => r.id !== review.id);
+                   reviews.push(result);
+                   this.reviews$.next(reviews);
+                   return result;
+                 }),
+                 catchError(this.errorHandler.onHttpError),
+                 finalize(() => this.loaderService.hide())
+               ).toPromise();
+  }
+
   delete(review: Review) {
     this.loaderService.show();
     return this.http.delete(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}`).pipe(
@@ -70,4 +85,5 @@ export class ReviewService {
       finalize(() => this.loaderService.hide())
     );
   }
+
 }

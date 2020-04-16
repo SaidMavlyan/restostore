@@ -3,7 +3,7 @@ import { isAuthenticated } from './authenticated';
 import { isAuthorized } from './authorized';
 import { create, get, getUsers, patch, remove, resetPassword } from './controllers/users.controller';
 import { UserManagerRoles } from './roles';
-import { createReview, deleteReview, getReviews } from './controllers/review.controller';
+import { createReview, deleteReview, getReviews, patchReview } from './controllers/review.controller';
 
 export function routesConfig(app: Application) {
   userRoutes(app);
@@ -19,6 +19,12 @@ function reviewRoutes(app: Application) {
 
   app.get('/restaurants/:restaurantId/reviews', [
     getReviews
+  ]);
+
+  app.patch('/restaurants/:restaurantId/reviews/:reviewId', [
+    isAuthenticated,
+    isAuthorized({hasRole: UserManagerRoles, allowSameUser: true}),
+    patchReview
   ]);
 
   app.delete('/restaurants/:restaurantId/reviews/:reviewId', [
