@@ -3,6 +3,8 @@ import { handleError, validateRating, validateRequired } from '../utils';
 import * as admin from 'firebase-admin';
 import { Review } from '../interfaces/review';
 import { Restaurant } from '../interfaces/restaurant';
+import { User } from 'src/interfaces/user';
+import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 
 export async function createReview(req: Request, res: Response) {
   try {
@@ -47,8 +49,10 @@ export async function createReview(req: Request, res: Response) {
       });
     });
 
+    const updatedSnap = await reviewRef.get();
+
     res.status(201);
-    return res.send({id: reviewRef.id, restaurantId, ...entry});
+    return res.send(await mapReview(updatedSnap, restaurantId));
   } catch (err) {
     return handleError(res, err);
   }
@@ -64,13 +68,13 @@ export async function getReviews(req: Request, res: Response) {
     const {restaurantId} = req.params;
 
     const initDocsRef = admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
-                             .orderBy('createdAt');
+                             .orderBy('createdAt', 'desc');
 
     const totalDocsRef = await initDocsRef.get();
     const totalSize = totalDocsRef.size;
 
     const docsSnap = await initDocsRef.offset(pageSize * page).limit(pageSize).get();
-    const reviews = await docsSnap.docs.map(doc => ({restaurantId, id: doc.id, ...doc.data()}));
+    const reviews = await Promise.all(docsSnap.docs.map(doc => mapReview(doc, restaurantId)));
 
     res.status(200);
 
@@ -115,7 +119,7 @@ export async function patchReview(req: Request, res: Response) {
     const updatedSnap = await reviewRef.get();
 
     res.status(200);
-    return res.send({id: reviewId, restaurantId, ...updatedSnap.data()});
+    return res.send(await mapReview(updatedSnap, restaurantId));
   } catch (err) {
     return handleError(res, err);
   }
@@ -160,3 +164,15 @@ export async function deleteReview(req: Request, res: Response) {
   }
 }
 
+async function mapReview(doc: DocumentSnapshot, restaurantId: string) {
+  const review = doc.data() as Review;
+  const userSnap = await admin.firestore().doc(`users/${review.userId}`).get();
+  const user = userSnap.data() as User;
+
+  return {
+    restaurantId,
+    id: doc.id,
+    user,
+    ...review
+  };
+}

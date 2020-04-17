@@ -3,7 +3,7 @@
   <div fxLayout="row" fxLayoutAlign="space-between center">
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
       <div class="avatar"></div>
-      <span>Commenter's Name</span>
+      <span>{{review?.user?.displayName}}</span>
     </div>
 
     <button [matMenuTriggerFor]="reviewMenu" mat-icon-button>

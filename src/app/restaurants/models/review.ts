@@ -1,3 +1,5 @@
+import { User } from '../../users/models/user';
+
 export interface Reply {
   text: string;
   authorId: string;
@@ -7,7 +9,7 @@ export interface Reply {
 export interface Review {
   id: string;
   userId: string;
-  userName?: string;
+  user: User;
   restaurantId: string;
   comment: string;
   rating: number;

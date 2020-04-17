@@ -64,8 +64,8 @@ export class ReviewService {
     return this.http.patch<Review>(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}`, review)
                .pipe(
                  map(result => {
-                   const reviews = this.reviews$.value.filter(r => r.id !== review.id);
-                   reviews.push(result);
+                   const reviews = this.reviews$.value;
+                   reviews.splice(reviews.findIndex(r => r.id === review.id), 1, result);
                    this.reviews$.next(reviews);
                    return result;
                  }),

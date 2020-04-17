@@ -2,16 +2,10 @@ import { Request, Response } from 'express';
 import * as firebase from 'firebase';
 import * as admin from 'firebase-admin';
 import { handleError, signIn, validatePassword, validateRequired } from '../utils';
+import { User } from '../interfaces/user';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
 const DEFAULT_LIMIT_PER_PAGE = 10;
-
-export interface User {
-  uid: string;
-  displayName: string;
-  role: string;
-  email: string;
-}
 
 export async function create(req: Request, res: Response) {
   try {
