@@ -1,48 +1,55 @@
 <div fxLayout="row wrap" fxFill fxLayoutAlign="space-evenly center">
-  <div fxFlex="50" fxFlex.xs="100">
-    <ng-container *ngIf="restaurant">
-      <mat-card>
-        <img [src]="restaurant?.photo || placeholder" alt="Image of {{restaurant.name}}" mat-card-image>
-        <mat-card-content>
+  <div fxFlex="60" fxFlex.md="70" fxFlex.sm="80" fxFlex.xs="100">
+    <mat-card *ngIf="restaurant" class="mat-elevation-z5">
+
+      <img [src]="restaurant?.photo || placeholder" alt="Image of {{restaurant.name}}" mat-card-image>
+
+      <mat-card-content>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
           <div>
-            <div class="details">
-              <h2>{{restaurant?.name}}</h2>
-              <div class="rating">
-                <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
-              </div>
-            </div>
+            <h2>{{restaurant?.name}}</h2>
           </div>
-        </mat-card-content>
-        <mat-card-actions fxLayoutAlign="space-between center">
-          <button (click)="addReview()" color="primary" mat-flat-button>
-            <mat-icon>star_border</mat-icon>
-            Rate
+          <button [matMenuTriggerFor]="restoMenu" mat-icon-button>
+            <mat-icon>more_vert</mat-icon>
           </button>
 
-          <button *ngIf="restaurant.pendingReplies" (click)="replyToReviews()" color="primary"
-                  mat-flat-button
-                  matBadge="{{restaurant.pendingReplies}}"
-                  matBadgeColor="warn"
-                  matBadgeDescription="Unreplied comments">
-            <mat-icon>reply</mat-icon>
-            Reply
-          </button>
+        </div>
+        <div class="rating">
+          <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
+        </div>
+      </mat-card-content>
 
-          <button mat-flat-button color="primary" (click)="editRestaurant()">
-            <mat-icon>create</mat-icon>
-            Edit
-          </button>
+      <mat-card-actions fxLayoutAlign="center center" fxLayoutGap="20px">
+        <button (click)="addReview()" color="primary" mat-flat-button>
+          <mat-icon>create</mat-icon>
+          Write a review
+        </button>
 
-          <button mat-flat-button color="warn" (click)="deleteRestaurant()">
-            <mat-icon>delete_sweep</mat-icon>
-            Delete
-          </button>
-        </mat-card-actions>
-      </mat-card>
+        <button (click)="replyToReviews()" *ngIf="restaurant.pendingReplies" color="primary"
+                mat-flat-button
+                matBadge="{{restaurant.pendingReplies}}"
+                matBadgeColor="warn"
+                matBadgeDescription="Unreplied comments">
+          <mat-icon>reply</mat-icon>
+          Reply
+        </button>
+      </mat-card-actions>
 
-    </ng-container>
+      <mat-divider></mat-divider>
+
+      <app-reviews *ngIf="restaurant" [restaurantId]="restaurant.id"></app-reviews>
+
+    </mat-card>
+
+    <mat-menu #restoMenu="matMenu">
+      <button (click)="editRestaurant()" mat-menu-item>
+        <span>Edit</span>
+      </button>
+
+      <button (click)="deleteRestaurant()" mat-menu-item>
+        <span>Delete</span>
+      </button>
+    </mat-menu>
   </div>
-
 </div>
 
-<app-reviews *ngIf="restaurant" [restaurantId]="restaurant.id"></app-reviews>

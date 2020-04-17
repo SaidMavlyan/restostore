@@ -10,14 +10,12 @@ body {
   background-color: #f4f4f4;
 }
 
-ngx-material-timepicker-container {
-  .timepicker-overlay {
-    z-index: 2000 !important;
-  }
-}
-
 .color-warn {
   color: red;
+}
+
+.faded {
+  color: #999;
 }
 
 table.mat-table {

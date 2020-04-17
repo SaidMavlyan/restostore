@@ -1,43 +1,61 @@
-<div fxFill fxLayout="row wrap" fxLayoutAlign="center center">
+<div *ngFor="let review of (reviews$ | async)" class="review">
 
-  <div *ngFor="let review of (reviews$ | async)" class="review" fxFlex="51" fxFlex.xs="100">
-    <mat-card>
-      <app-rating-stars [rating]="review.rating" [showNumberRating]="false"></app-rating-stars>
-      <mat-divider></mat-divider>
-      <mat-form-field appearance="outline">
-        <textarea disabled matInput>{{review.comment}}</textarea>
-      </mat-form-field>
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+      <div class="avatar"></div>
+      <span>Commenter's Name</span>
+    </div>
 
-      <mat-card-actions>
-        <div dir="rtl" fxLayout="row" fxLayoutGap="10px">
-          <button (click)="deleteReview(review)" color="primary" mat-mini-fab>
-            <mat-icon>delete_sweep</mat-icon>
-          </button>
-          <button (click)="editReview(review)" color="primary" mat-mini-fab>
-            <mat-icon>create</mat-icon>
-          </button>
-          <button (click)="setReply(review)" *ngIf="!review.reply" color="primary" mat-mini-fab>
-            <mat-icon>reply</mat-icon>
-          </button>
-        </div>
-      </mat-card-actions>
-
-      <div *ngIf="review.reply" class="reply">
-        <mat-form-field appearance="outline">
-          <textarea disabled matInput>{{review?.reply?.text}}</textarea>
-        </mat-form-field>
-        <mat-card-actions>
-          <div dir="rtl" fxLayout="row" fxLayoutGap="10px">
-            <button (click)="deleteReply(review)" color="primary" mat-mini-fab>
-              <mat-icon>delete_sweep</mat-icon>
-            </button>
-            <button (click)="setReply(review)" color="primary" mat-mini-fab>
-              <mat-icon>create</mat-icon>
-            </button>
-          </div>
-        </mat-card-actions>
-      </div>
-    </mat-card>
+    <button [matMenuTriggerFor]="reviewMenu" mat-icon-button>
+      <mat-icon>more_vert</mat-icon>
+    </button>
   </div>
+
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <app-rating-stars [rating]="review.rating" [showNumberRating]="false"></app-rating-stars>
+    <span class="faded">22/03/2020</span>
+  </div>
+
+  <div class="comment">{{review.comment}}</div>
+
+  <div *ngIf="review.reply" class="reply">
+    <div class="tip"></div>
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="reply-author">
+        <span class="name">Resto owner's name</span>
+        <span class="faded">22/03/2020</span>
+      </div>
+      <button [matMenuTriggerFor]="replyMenu" mat-icon-button>
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+
+    <div class="reply-text">{{review?.reply?.text}}</div>
+  </div>
+
+  <mat-menu #replyMenu="matMenu">
+    <button (click)="setReply(review)" mat-menu-item>
+      <span>Edit reply</span>
+    </button>
+
+    <button (click)="deleteReply(review)" mat-menu-item>
+      <span>Delete reply</span>
+    </button>
+  </mat-menu>
+
+  <mat-menu #reviewMenu="matMenu">
+    <button (click)="setReply(review)" *ngIf="!review.reply" mat-menu-item>
+      <span>Reply</span>
+    </button>
+
+    <button (click)="editReview(review)" mat-menu-item>
+      <span>Edit review</span>
+    </button>
+
+    <button (click)="deleteReview(review)" mat-menu-item>
+      <span>Delete review</span>
+    </button>
+  </mat-menu>
+
 </div>
 

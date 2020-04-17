@@ -63,6 +63,10 @@
               <div class="details">
                 <h2>{{restaurant.name}}</h2>
                 <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
+                <mat-icon *ngIf="restaurant.pendingReplies" [matBadge]="restaurant.pendingReplies"
+                          matBadgeColor="warn"
+                          matBadgeDescription="Unreplied comments">comment
+                </mat-icon>
               </div>
             </div>
           </mat-card-content>

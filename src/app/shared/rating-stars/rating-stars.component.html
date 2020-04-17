@@ -1,4 +1,8 @@
-<div #ratingStars class="rating {{isInput ? 'user-input' : ''}}">
-  <span *ngIf="showNumberRating" class="number">{{ratingVal.toFixed(1)}}</span>
+<div #ratingStars
+     class="rating {{isInput ? 'user-input' : ''}}"
+     fxLayoutAlign="start center"
+     fxLayoutGap="row"
+     fxLayoutGap="5px">
+  <span *ngIf="showNumberRating" class="faded number">{{ratingVal.toFixed(1)}}</span>
   <mat-icon *ngFor="let i of stars" class="iStar">star</mat-icon>
 </div>

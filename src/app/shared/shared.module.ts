@@ -23,7 +23,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter, MomentDateModule } from '@angular/material-moment-adapter';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -79,7 +78,6 @@ export const MY_FORMATS = {
     MatDatepickerModule,
     ReactiveFormsModule,
     FormsModule,
-    NgxMaterialTimepickerModule
   ],
   exports: [
     MomentDateModule,
@@ -114,7 +112,6 @@ export const MY_FORMATS = {
     MatToolbarModule,
     ReactiveFormsModule,
     FormsModule,
-    NgxMaterialTimepickerModule,
   ],
   providers: [
     {
