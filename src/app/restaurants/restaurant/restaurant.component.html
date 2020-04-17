@@ -26,9 +26,7 @@
         </button>
       </mat-card-actions>
 
-      <mat-divider></mat-divider>
-
-      <app-reviews *ngIf="restaurant" [restaurantId]="restaurant.id"></app-reviews>
+      <app-reviews *ngIf="restaurant" [restaurant]="restaurant"></app-reviews>
 
     </mat-card>
 

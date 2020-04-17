@@ -5,8 +5,15 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
 import { Reply, Review } from '../models/review';
 import { environment } from '../../../environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+
+interface ReviewQuery {
+  limit: number;
+  page: number;
+  filterName?: string;
+  filterVal?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -35,20 +42,11 @@ export class ReviewService {
                ).toPromise();
   }
 
-  getReviews(restaurantId: string, {limit, page}) {
+  getReviews(restaurantId: string, query: ReviewQuery) {
     this.loaderService.show();
-    let params = new HttpParams();
     this.reviews$.next([]);
 
-    if (limit) {
-      params = params.set('limit', limit.toString());
-    }
-
-    if (page) {
-      params = params.set('page', page.toString());
-    }
-
-    return this.http.get<{ totalSize: number; reviews: Review[] }>(`${this.baseUrl}/${restaurantId}/reviews`, {params})
+    return this.http.post<{ totalSize: number; reviews: Review[] }>(`${this.baseUrl}/${restaurantId}/reviews/fetch`, query)
                .pipe(
                  map(result => {
                    this.reviews$.next(result.reviews);

@@ -33,7 +33,7 @@ function reviewRoutes(app: Application) {
     createReview
   ]);
 
-  app.get('/restaurants/:restaurantId/reviews', [
+  app.post('/restaurants/:restaurantId/reviews/fetch', [
     getReviews
   ]);
 

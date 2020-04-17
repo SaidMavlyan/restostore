@@ -61,13 +61,21 @@ const DEFAULT_LIMIT_PER_PAGE = 10;
 
 export async function getReviews(req: Request, res: Response) {
   try {
-    const reqLimit = Number(req.query.limit);
+    const reqLimit = Number(req.body.limit);
     const pageSize = (reqLimit > 0 && reqLimit < 1000) ? reqLimit : DEFAULT_LIMIT_PER_PAGE;
-    const page = Number(req.query.page) || 0;
+    const page = Number(req.body.page) || 0;
     const {restaurantId} = req.params;
 
-    const initDocsRef = admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
-                             .orderBy('createdAt', 'desc');
+    let initDocsRef;
+
+    if (req.body.filterName) {
+      initDocsRef = admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
+                         .where(req.body.filterName, '==', req.body.filterVal)
+                         .orderBy('createdAt', 'desc');
+    } else {
+      initDocsRef = admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
+                         .orderBy('createdAt', 'desc');
+    }
 
     const totalDocsRef = await initDocsRef.get();
     const totalSize = totalDocsRef.size;

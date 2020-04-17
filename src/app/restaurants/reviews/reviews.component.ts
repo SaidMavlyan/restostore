@@ -7,6 +7,8 @@ import { BehaviorSubject } from 'rxjs';
 import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
 import { ReviewReplyDialogComponent } from '../review-reply-dialog/review-reply-dialog.component';
 import { ReplyDeleteDialogComponent } from '../reply-delete-dialog/reply-delete-dialog.component';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { Restaurant } from '../models/restaurant';
 
 @Component({
   selector: 'app-reviews',
@@ -15,7 +17,7 @@ import { ReplyDeleteDialogComponent } from '../reply-delete-dialog/reply-delete-
 })
 export class ReviewsComponent implements OnInit {
 
-  @Input() restaurantId: string;
+  @Input() restaurant: Restaurant;
   dialogConfig = new MatDialogConfig();
   reviews$: BehaviorSubject<Review[]>;
 
@@ -26,7 +28,7 @@ export class ReviewsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.reviewService.getReviews(this.restaurantId, {limit: 10, page: 0})
+    this.reviewService.getReviews(this.restaurant.id, {limit: 10, page: 0})
         .subscribe();
 
     this.reviews$ = this.reviewService.reviews$;
@@ -52,4 +54,13 @@ export class ReviewsComponent implements OnInit {
     this.dialog.open(ReplyDeleteDialogComponent, this.dialogConfig);
   }
 
+  tabChange($event: MatTabChangeEvent) {
+    if ($event.index === 1) {
+      this.reviewService.getReviews(this.restaurant.id, {limit: 10, page: 0, filterName: 'reply', filterVal: null})
+          .subscribe();
+    } else {
+      this.reviewService.getReviews(this.restaurant.id, {limit: 10, page: 0})
+          .subscribe();
+    }
+  }
 }
