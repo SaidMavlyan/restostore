@@ -3,7 +3,9 @@ import { User } from '../../users/models/user';
 export interface Reply {
   text: string;
   authorId: string;
-  createdAt: string;
+  createdAt: {
+    _seconds: number
+  };
 }
 
 export interface Review {
@@ -14,6 +16,8 @@ export interface Review {
   comment: string;
   rating: number;
   dateOfVisit: string;
-  createdAt: string;
+  createdAt: {
+    _seconds: number
+  };
   reply: Reply;
 }

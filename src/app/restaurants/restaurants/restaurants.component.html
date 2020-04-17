@@ -56,17 +56,16 @@
     <div *ngFor="let restaurant of restaurants"
          fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
       <div class="resto-card" routerLink="/restaurants/{{restaurant.id}}">
-        <mat-card>
+        <mat-card [matBadgeHidden]="!restaurant.pendingReplies"
+                  [matBadge]="restaurant.pendingReplies"
+                  matBadgeColor="warn"
+                  matBadgeDescription="Comments without replies">
           <mat-card-content>
             <img [src]="restaurant?.photo || placeholder" alt="Image of {{restaurant.name}}" mat-card-image>
             <div>
               <div class="details">
                 <h2>{{restaurant.name}}</h2>
                 <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
-                <mat-icon *ngIf="restaurant.pendingReplies" [matBadge]="restaurant.pendingReplies"
-                          matBadgeColor="warn"
-                          matBadgeDescription="Unreplied comments">comment
-                </mat-icon>
               </div>
             </div>
           </mat-card-content>

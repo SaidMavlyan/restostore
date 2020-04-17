@@ -2,7 +2,11 @@
 
   <div fxLayout="row" fxLayoutAlign="space-between center">
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-      <div class="avatar"></div>
+      <img *ngIf="review.user.photoURL; else defaultAvatar" [src]="review?.user?.photoURL"
+           class="avatar mat-elevation-z2">
+      <ng-template #defaultAvatar>
+        <mat-icon class="avatar mat-elevation-z2">account_circle</mat-icon>
+      </ng-template>
       <span>{{review?.user?.displayName}}</span>
     </div>
 
@@ -13,17 +17,20 @@
 
   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
     <app-rating-stars [rating]="review.rating" [showNumberRating]="false"></app-rating-stars>
-    <span class="faded">22/03/2020</span>
+    <span class="faded">{{review.createdAt._seconds * 1000 | date }}</span>
   </div>
 
-  <div class="comment">{{review.comment}}</div>
+  <div class="comment">
+    {{review.comment}}
+    <div class="faded date-of-visit">Visit date: {{review.dateOfVisit | date}}</div>
+  </div>
 
   <div *ngIf="review.reply" class="reply">
     <div class="tip"></div>
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <div class="reply-author">
         <span class="name">Resto owner's name</span>
-        <span class="faded">22/03/2020</span>
+        <span class="faded">{{review.reply.createdAt._seconds * 1000 | date }}</span>
       </div>
       <button [matMenuTriggerFor]="replyMenu" mat-icon-button>
         <mat-icon>more_vert</mat-icon>

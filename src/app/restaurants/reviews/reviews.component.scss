@@ -38,11 +38,16 @@ $reply-bg: #e1e1e1;
 .comment {
   margin-top: 20px;
   margin-bottom: 20px;
+
+  .date-of-visit {
+    margin-top: 10px;
+  }
 }
 
 .avatar {
   height: 40px;
   width: 40px;
+  font-size: 40px;
+  color: #6fcddf;
   border-radius: 50%;
-  background-color: $reply-bg;
 }

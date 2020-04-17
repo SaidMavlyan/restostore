@@ -3,7 +3,6 @@ import { handleError, validateRating, validateRequired } from '../utils';
 import * as admin from 'firebase-admin';
 import { Review } from '../interfaces/review';
 import { Restaurant } from '../interfaces/restaurant';
-import { User } from 'src/interfaces/user';
 import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 
 export async function createReview(req: Request, res: Response) {
@@ -42,7 +41,7 @@ export async function createReview(req: Request, res: Response) {
           comment,
           dateOfVisit,
           reply: null,
-          createdAt: admin.firestore.FieldValue.serverTimestamp()
+          createdAt: new Date()
         };
 
         return transaction.set(reviewRef, entry);
@@ -167,12 +166,17 @@ export async function deleteReview(req: Request, res: Response) {
 async function mapReview(doc: DocumentSnapshot, restaurantId: string) {
   const review = doc.data() as Review;
   const userSnap = await admin.firestore().doc(`users/${review.userId}`).get();
-  const user = userSnap.data() as User;
+  const user = userSnap.data();
 
   return {
     restaurantId,
     id: doc.id,
-    user,
+    user: {
+      uid: user.uid,
+      displayName: user?.displayName,
+      photoURL: user?.photoURL
+    },
     ...review
   };
 }
+

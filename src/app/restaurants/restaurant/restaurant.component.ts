@@ -62,8 +62,4 @@ export class RestaurantComponent implements OnInit {
     this.dialogConfig.data = this.restaurant;
     this.dialog.open(RestaurantDeleteDialogComponent, this.dialogConfig);
   }
-
-  replyToReviews() {
-
-  }
 }

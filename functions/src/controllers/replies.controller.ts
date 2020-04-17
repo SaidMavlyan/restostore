@@ -37,7 +37,7 @@ export async function setReply(req: Request, res: Response) {
       reply = {
         text,
         authorId: uid,
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
+        createdAt: new Date()
       };
 
       return transaction.update(reviewRef, {reply});

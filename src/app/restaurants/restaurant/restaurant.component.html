@@ -24,15 +24,6 @@
           <mat-icon>create</mat-icon>
           Write a review
         </button>
-
-        <button (click)="replyToReviews()" *ngIf="restaurant.pendingReplies" color="primary"
-                mat-flat-button
-                matBadge="{{restaurant.pendingReplies}}"
-                matBadgeColor="warn"
-                matBadgeDescription="Unreplied comments">
-          <mat-icon>reply</mat-icon>
-          Reply
-        </button>
       </mat-card-actions>
 
       <mat-divider></mat-divider>
