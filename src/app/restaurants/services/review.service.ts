@@ -54,7 +54,7 @@ export class ReviewService {
     this.loaderService.show();
     const body = {limit: this.defaultLimit, lastReviewId: null, ...query};
 
-    if (query.isNext && this.reviews$.value.length) {
+    if (!query.isReset && this.reviews$.value.length) {
       body.lastReviewId = this.reviews$.value[this.reviews$.value.length - 1].id;
     } else {
       this.reviews$.next([]);

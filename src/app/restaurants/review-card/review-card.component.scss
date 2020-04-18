@@ -1,0 +1,54 @@
+$reply-bg: #e1e1e1;
+
+.review {
+  margin-top: 50px;
+}
+
+.reply {
+  margin-left: 30px;
+  border-radius: 1px;
+  background-color: $reply-bg;
+
+  .reply-author {
+    padding: 10px;
+
+    .name {
+      font-weight: bold;
+    }
+
+    .faded {
+      padding-left: 10px;
+    }
+  }
+
+  .reply-text {
+    padding: 10px;
+  }
+}
+
+.tip {
+  border-bottom: 10px solid $reply-bg;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  position: relative;
+  top: -9px;
+  left: 10px;
+  width: 0;
+}
+
+.comment {
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  .date-of-visit {
+    margin-top: 10px;
+  }
+}
+
+.avatar {
+  height: 40px;
+  width: 40px;
+  font-size: 40px;
+  color: #6fcddf;
+  border-radius: 50%;
+}

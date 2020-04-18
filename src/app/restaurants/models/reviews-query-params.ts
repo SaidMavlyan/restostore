@@ -1,7 +1,7 @@
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
 export interface ReviewsQueryParams {
-  isNext?: boolean;
+  isReset?: boolean;
   limit?: number;
   sort?: OrderByDirection;
   filterName?: string;

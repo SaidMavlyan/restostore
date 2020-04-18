@@ -1,0 +1,64 @@
+<div class="review" fxLayout="row" fxLayoutAlign="space-between center">
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+    <img *ngIf="review.user.photoURL; else defaultAvatar" [src]="review?.user?.photoURL"
+         alt="user's avatar"
+         class="avatar mat-elevation-z2">
+    <ng-template #defaultAvatar>
+      <mat-icon class="avatar mat-elevation-z2">account_circle</mat-icon>
+    </ng-template>
+    <span>{{review?.user?.displayName}}</span>
+  </div>
+
+  <button [matMenuTriggerFor]="reviewMenu" mat-icon-button>
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <app-rating-stars [rating]="review.rating" [showNumberRating]="false"></app-rating-stars>
+  <span class="faded">{{review.createdAt._seconds * 1000 | date }}</span>
+</div>
+
+<div class="comment">
+  {{review.comment}}
+  <div class="faded date-of-visit">Visit date: {{review.dateOfVisit | date}}</div>
+</div>
+
+<div *ngIf="review.reply" class="reply">
+  <div class="tip"></div>
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <div class="reply-author">
+      <span class="name">Resto owner's name</span>
+      <span class="faded">{{review.reply.createdAt._seconds * 1000 | date }}</span>
+    </div>
+    <button [matMenuTriggerFor]="replyMenu" mat-icon-button>
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </div>
+
+  <div class="reply-text">{{review?.reply?.text}}</div>
+</div>
+
+<mat-menu #replyMenu="matMenu">
+  <button (click)="setReply(review)" mat-menu-item>
+    <span>Edit reply</span>
+  </button>
+
+  <button (click)="deleteReply(review)" mat-menu-item>
+    <span>Delete reply</span>
+  </button>
+</mat-menu>
+
+<mat-menu #reviewMenu="matMenu">
+  <button (click)="setReply(review)" *ngIf="!review.reply" mat-menu-item>
+    <span>Reply</span>
+  </button>
+
+  <button (click)="editReview(review)" mat-menu-item>
+    <span>Edit review</span>
+  </button>
+
+  <button (click)="deleteReview(review)" mat-menu-item>
+    <span>Delete review</span>
+  </button>
+</mat-menu>

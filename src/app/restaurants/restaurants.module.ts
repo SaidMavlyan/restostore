@@ -12,6 +12,7 @@ import { ReviewsComponent } from './reviews/reviews.component';
 import { ReviewDeleteDialogComponent } from './review-delete-dialog/review-delete-dialog.component';
 import { ReviewReplyDialogComponent } from './review-reply-dialog/review-reply-dialog.component';
 import { ReplyDeleteDialogComponent } from './reply-delete-dialog/reply-delete-dialog.component';
+import { ReviewCardComponent } from './review-card/review-card.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { ReplyDeleteDialogComponent } from './reply-delete-dialog/reply-delete-d
     ReviewDeleteDialogComponent,
     ReviewReplyDialogComponent,
     ReplyDeleteDialogComponent,
+    ReviewCardComponent,
   ],
   entryComponents: [
     RestaurantDialogComponent,
