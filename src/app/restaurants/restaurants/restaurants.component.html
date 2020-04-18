@@ -1,7 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="center center">
   <mat-form-field appearance="outline" fxFlex="50" fxFlex.lt-md="90">
 
-    <mat-label>{{appliedFilter}}</mat-label>
+    <mat-label>{{filterLabel}}</mat-label>
     <mat-select #filterSelect (closed)="applyFilter()" [formControl]="" multiple>
 
       <div class="sort-option-wrap">
@@ -57,7 +57,7 @@
          fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
       <div class="resto-card" routerLink="/restaurants/{{restaurant.id}}">
         <mat-card [matBadgeHidden]="!restaurant.pendingReplies"
-                  [matBadge]="restaurant.pendingReplies"
+                  [matBadge]="restaurant.pendingReplies.toString()"
                   matBadgeColor="warn"
                   matBadgeDescription="Comments without replies">
           <mat-card-content>
@@ -73,6 +73,8 @@
       </div>
     </div>
   </ng-container>
+  <app-infinite-scroll (scrolled)="loadRestaurants()" [options]="{rootMargin: '100px'}">
+  </app-infinite-scroll>
 
   <ng-template #noRestaurants>
     <div *ngIf="!isLoading" class="no-resto" fxFlexFill>No restaurants. Try to change filter parameters.</div>

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RestaurantDialogComponent } from '../restaurant-dialog/restaurant-dialog.component';
@@ -7,10 +7,6 @@ import { Restaurant } from '../models/restaurant';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { UserService } from '../../users/services/user.service';
 import { LoaderService } from '../../services/loader.service';
-import { Subject } from 'rxjs';
-import { throttleTime } from 'rxjs/operators';
-import { isWindowBottom } from '../../services/utils';
-import { NotifierService } from '../../services/notifier.service';
 import { placeholderImage } from '../../const/util';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
@@ -30,14 +26,12 @@ export class RestaurantsComponent implements OnInit {
   isLoading = false;
   placeholder = placeholderImage;
 
-  private loadMore$ = new Subject<number>();
-  appliedFilter = 'Filter restaurants by rating';
+  filterLabel = 'Filter restaurants by rating';
 
   constructor(private db: AngularFirestore,
               private dialog: MatDialog,
               private userService: UserService,
               private loaderService: LoaderService,
-              private notifierService: NotifierService,
               private afAuth: AngularFireAuth,
               private rs: RestaurantService) {
     if (this.rs.lastQuery.sort) {
@@ -48,7 +42,7 @@ export class RestaurantsComponent implements OnInit {
       this.ratingFilter = isNaN(this.rs.lastQuery.rating) ? this.ratingFilter : String(this.rs.lastQuery.rating);
     }
 
-    this.applyFilter();
+    this.setFilterLabel();
   }
 
   ngOnInit() {
@@ -59,12 +53,16 @@ export class RestaurantsComponent implements OnInit {
         this.canAdd = false;
       }
     });
+  }
 
-    this.loadMore$.pipe(
-      throttleTime(1500)
-    ).subscribe(() => {
-      this.loadRestaurants(this.restaurants.length > 0);
-    });
+  setFilterLabel() {
+    const res = this.ratingFilter === this.ratingOptions[0] ? 'All' : ` ${this.ratingFilter} star`;
+    this.filterLabel = `${res} restaurants in ${this.sort} order`;
+  }
+
+  applyFilter() {
+    this.setFilterLabel();
+    this.loadRestaurants(true);
   }
 
   addRestaurant() {
@@ -73,37 +71,24 @@ export class RestaurantsComponent implements OnInit {
     this.dialog.open(RestaurantDialogComponent, this.dialogConfig).afterClosed()
         .subscribe((v) => {
           if (v) {
-            this.notifierService.info('Successfully created new restaurant');
-            this.loadRestaurants(false);
+            this.loadRestaurants(true);
           }
         });
   }
 
-  applyFilter() {
-    this.loadRestaurants(false);
-    const res = this.ratingFilter === this.ratingOptions[0] ? 'All' : ` ${this.ratingFilter} star`;
-    this.appliedFilter = `${res} restaurats in ${this.sort} order`;
-  }
-
-  loadRestaurants(isNext = false) {
+  loadRestaurants(reset = false) {
 
     this.isLoading = true;
+    const isReset = reset || !this.restaurants.length;
 
-    this.rs.loadRestaurants({isNext, sort: this.sort, rating: Number(this.ratingFilter)}).subscribe(res => {
-      if (isNext) {
-        this.restaurants.push(...res);
-      } else {
+    this.rs.loadRestaurants({isReset, sort: this.sort, rating: Number(this.ratingFilter)}).subscribe(res => {
+      if (isReset) {
         this.restaurants = res;
+      } else {
+        this.restaurants.push(...res);
       }
       this.isLoading = false;
     });
-  }
-
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event: any) {
-    if (isWindowBottom()) {
-      this.loadMore$.next(1);
-    }
   }
 }
 

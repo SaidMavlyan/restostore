@@ -14,19 +14,21 @@ import OrderByDirection = firebase.firestore.OrderByDirection;
 })
 export class RestaurantService {
 
-  lastDoc: QueryDocumentSnapshot<DocumentData>;
+  lastSnap: QueryDocumentSnapshot<DocumentData>;
   lastQuery: RestaurantsQueryParams = {};
+  private defaultLimit: number;
 
   constructor(private db: AngularFirestore,
               private loaderService: LoaderService,
               private errorHandler: ErrorHandlerService) {
+    this.defaultLimit = Math.ceil(window.innerHeight / 50); // Calculating min number of restos to fill the entire screen
   }
 
-  loadRestaurants({isNext = false, limit = 10, sort = 'desc', rating}: RestaurantsQueryParams): Observable<Restaurant[]> {
+  loadRestaurants({isReset = false, limit = this.defaultLimit, sort = 'desc', rating}: RestaurantsQueryParams): Observable<Restaurant[]> {
     this.loaderService.show();
     this.lastQuery = arguments[0];
-    if (!isNext) {
-      this.lastDoc = null;
+    if (isReset) {
+      this.lastSnap = null;
     }
 
     return this.db.collection('restaurants',
@@ -38,8 +40,8 @@ export class RestaurantService {
                    .where('avgRating', '<', rating + 1);
         }
 
-        if (this.lastDoc) {
-          res = res.startAfter(this.lastDoc);
+        if (this.lastSnap) {
+          res = res.startAfter(this.lastSnap);
         }
 
         return res.limit(limit);
@@ -49,7 +51,7 @@ export class RestaurantService {
                  take(1),
                  map(querySnapp => {
                    if (querySnapp.size) {
-                     this.lastDoc = querySnapp.docs[querySnapp.size - 1];
+                     this.lastSnap = querySnapp.docs[querySnapp.size - 1];
                    }
                    return convertDocs<Restaurant>(querySnapp.docs);
                  }),
