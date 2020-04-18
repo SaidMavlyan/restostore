@@ -78,4 +78,5 @@
   </mat-menu>
 
 </div>
-
+<app-infinite-scroll (scrolled)="loadReviews()" [options]="{rootMargin: '100px'}">
+</app-infinite-scroll>

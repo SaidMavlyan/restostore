@@ -61,9 +61,8 @@ const DEFAULT_LIMIT_PER_PAGE = 10;
 
 export async function getReviews(req: Request, res: Response) {
   try {
-    const reqLimit = Number(req.body.limit);
-    const pageSize = (reqLimit > 0 && reqLimit < 1000) ? reqLimit : DEFAULT_LIMIT_PER_PAGE;
-    const page = Number(req.body.page) || 0;
+    const limit = Number(req.body.limit) || DEFAULT_LIMIT_PER_PAGE;
+    const lastReviewId = req.body.lastReviewId;
     const {restaurantId} = req.params;
 
     let initDocsRef;
@@ -77,16 +76,19 @@ export async function getReviews(req: Request, res: Response) {
                          .orderBy('createdAt', 'desc');
     }
 
-    const totalDocsRef = await initDocsRef.get();
-    const totalSize = totalDocsRef.size;
+    if (lastReviewId) {
+      const lastReviewSnap = await admin.firestore()
+                                        .doc(`restaurants/${restaurantId}/reviews/${lastReviewId}`).get();
 
-    const docsSnap = await initDocsRef.offset(pageSize * page).limit(pageSize).get();
+      initDocsRef = initDocsRef.startAfter(lastReviewSnap);
+    }
+
+    const docsSnap = await initDocsRef.limit(limit).get();
     const reviews = await Promise.all(docsSnap.docs.map(doc => mapReview(doc, restaurantId)));
 
     res.status(200);
 
     return res.send({
-      totalSize,
       reviews
     });
   } catch (err) {

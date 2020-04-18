@@ -7,26 +7,23 @@ import { Reply, Review } from '../models/review';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-
-interface ReviewQuery {
-  limit: number;
-  page: number;
-  filterName?: string;
-  filterVal?: string;
-}
+import { ReviewsQueryParams } from '../models/reviews-query-params';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReviewService {
 
-  private baseUrl = `${environment.baseUrl}/api/restaurants`;
   reviews$ = new BehaviorSubject<Review[]>(null);
+
+  private baseUrl = `${environment.baseUrl}/api/restaurants`;
+  private readonly defaultLimit: number;
 
   constructor(private db: AngularFirestore,
               private http: HttpClient,
               private loaderService: LoaderService,
               private errorHandler: ErrorHandlerService) {
+    this.defaultLimit = Math.ceil(window.innerHeight / 150);
   }
 
   addReview(restaurantId, review: Review) {
@@ -42,19 +39,31 @@ export class ReviewService {
                ).toPromise();
   }
 
-  getReviews(restaurantId: string, query: ReviewQuery) {
-    this.loaderService.show();
-    this.reviews$.next([]);
+  getReviews(restaurantId: string, query: ReviewsQueryParams) {
 
-    return this.http.post<{ totalSize: number; reviews: Review[] }>(`${this.baseUrl}/${restaurantId}/reviews/fetch`, query)
-               .pipe(
-                 map(result => {
-                   this.reviews$.next(result.reviews);
-                   return result;
-                 }),
-                 catchError(this.errorHandler.onHttpError),
-                 finalize(() => this.loaderService.hide())
-               );
+    this.loaderService.show();
+    const body = {limit: this.defaultLimit, lastReviewId: null, ...query};
+
+    if (query.isNext && this.reviews$.value.length) {
+      body.lastReviewId = this.reviews$.value[this.reviews$.value.length - 1].id;
+    } else {
+      this.reviews$.next([]);
+    }
+
+    this.http.post<{ reviews: Review[] }>(`${this.baseUrl}/${restaurantId}/reviews/fetch`, body)
+        .pipe(
+          map(({reviews}) => {
+            if (query.isNext) {
+              this.reviews$.next([...this.reviews$.value, ...reviews]);
+            } else {
+              this.reviews$.next(reviews);
+            }
+
+            return reviews;
+          }),
+          catchError(this.errorHandler.onHttpError),
+          finalize(() => this.loaderService.hide())
+        ).subscribe();
   }
 
   updateReview(review: Partial<Review>) {

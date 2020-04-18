@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ReviewService } from '../services/review.service';
 import { Review } from '../models/review';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -15,22 +15,18 @@ import { Restaurant } from '../models/restaurant';
   templateUrl: './reviews.component.html',
   styleUrls: ['./reviews.component.scss']
 })
-export class ReviewsComponent implements OnInit {
+export class ReviewsComponent {
 
   @Input() restaurant: Restaurant;
   dialogConfig = new MatDialogConfig();
   reviews$: BehaviorSubject<Review[]>;
+  private filterName = null;
 
   constructor(private reviewService: ReviewService,
               private dialog: MatDialog,
   ) {
     this.dialogConfig.width = '400px';
-  }
-
-  ngOnInit(): void {
-    this.reviewService.getReviews(this.restaurant.id, {limit: 10, page: 0})
-        .subscribe();
-
+    this.reviewService.reviews$.next([]);
     this.reviews$ = this.reviewService.reviews$;
   }
 
@@ -55,12 +51,19 @@ export class ReviewsComponent implements OnInit {
   }
 
   tabChange($event: MatTabChangeEvent) {
-    if ($event.index === 1) {
-      this.reviewService.getReviews(this.restaurant.id, {limit: 10, page: 0, filterName: 'reply', filterVal: null})
-          .subscribe();
-    } else {
-      this.reviewService.getReviews(this.restaurant.id, {limit: 10, page: 0})
-          .subscribe();
-    }
+
+    this.filterName = $event.index === 1 ? 'reply' : null;
+    this.loadReviews(true);
+
+  }
+
+  loadReviews(reset = false) {
+    const body = {
+      isNext: reset ? false : true,
+      filterName: this.filterName,
+      filterVal: null
+    };
+
+    this.reviewService.getReviews(this.restaurant.id, body);
   }
 }
