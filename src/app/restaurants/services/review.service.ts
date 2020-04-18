@@ -126,6 +126,14 @@ export class ReviewService {
                  finalize(() => this.loaderService.hide())
                ).toPromise();
   }
+
+  async getMyReview(restaurantId): Promise<Review> {
+    return this.http.get<{ review: Review }>(`${this.baseUrl}/${restaurantId}/reviews/mine`)
+               .pipe(
+                 map(({review}) => review),
+                 catchError(this.errorHandler.onHttpError)
+               ).toPromise();
+  }
 }
 
 function union(a: Array<Review>, b: Array<Review>) {

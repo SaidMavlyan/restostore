@@ -3,7 +3,7 @@ import { isAuthenticated } from './authenticated';
 import { isAuthorized } from './authorized';
 import { create, get, getUsers, patch, remove, resetPassword } from './controllers/users.controller';
 import { Roles, UserManagerRoles } from './roles';
-import { createReview, deleteReview, getHighestAndLowest, getReviews, patchReview } from './controllers/review.controller';
+import { createReview, deleteReview, getHighestAndLowest, getMyReview, getReviews, patchReview } from './controllers/review.controller';
 import { deleteReply, setReply } from './controllers/replies.controller';
 
 export function routesConfig(app: Application) {
@@ -39,6 +39,11 @@ function reviewRoutes(app: Application) {
 
   app.get('/restaurants/:restaurantId/reviews/highest-lowest', [
     getHighestAndLowest
+  ]);
+
+  app.get('/restaurants/:restaurantId/reviews/mine', [
+    isAuthenticated,
+    getMyReview
   ]);
 
   app.patch('/restaurants/:restaurantId/reviews/:reviewId', [

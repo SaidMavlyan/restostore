@@ -96,6 +96,31 @@ export async function getReviews(req: Request, res: Response) {
   }
 }
 
+export async function getMyReview(req: Request, res: Response) {
+  try {
+    const {restaurantId} = req.params;
+    const {uid} = res.locals;
+
+    let review = null;
+
+    const highestSnaps = await admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
+                                    .where('userId', '==', uid)
+                                    .limit(1).get();
+
+    if (highestSnaps.docs.length) {
+      review = await mapReview(highestSnaps.docs[0], restaurantId);
+    }
+
+    res.status(200);
+
+    return res.send(
+      {review}
+    );
+  } catch (err) {
+    return handleError(res, err);
+  }
+}
+
 export async function getHighestAndLowest(req: Request, res: Response) {
   try {
     const {restaurantId} = req.params;

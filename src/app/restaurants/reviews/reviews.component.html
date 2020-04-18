@@ -1,4 +1,20 @@
-<mat-tab-group (selectedTabChange)="tabChange($event)" mat-align-tabs="center">
+<div class="my-review">
+  <div>
+    <mat-tab-group>
+      <mat-tab label="My review"></mat-tab>
+    </mat-tab-group>
+    <app-review-card *ngIf="myReview; else writeReview" [review]="myReview"></app-review-card>
+  </div>
+
+  <ng-template #writeReview>
+    <button (click)="addReview()" color="primary" mat-flat-button>
+      <mat-icon>create</mat-icon>
+      Write a review
+    </button>
+  </ng-template>
+</div>
+
+<mat-tab-group (selectedTabChange)="tabChange($event)">
   <mat-tab label="All reviews"></mat-tab>
   <mat-tab>
     <ng-template matTabLabel>
@@ -12,7 +28,7 @@
 
 <div class="reviews">
   <div *ngFor="let review of (reviews$ | async)" class="review">
-    <app-review-card [review]="review"></app-review-card>
+    <app-review-card *ngIf="review.id != myReview.id" [review]="review"></app-review-card>
   </div>
 
   <app-infinite-scroll (scrolled)="loadReviews()" [options]="{rootMargin: '100px'}">

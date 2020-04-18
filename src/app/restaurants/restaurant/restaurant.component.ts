@@ -8,7 +8,6 @@ import { RestaurantDeleteDialogComponent } from '../restaurant-delete-dialog/res
 import { mergeMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
 import { placeholderImage } from '../../const/util';
-import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
 import { ReviewService } from '../services/review.service';
 
 @Component({
@@ -44,12 +43,6 @@ export class RestaurantComponent implements OnInit {
       })).subscribe((restaurant: Restaurant) => {
       this.restaurant = restaurant;
     });
-  }
-
-  addReview() {
-    this.dialogConfig.autoFocus = false;
-    this.dialogConfig.data = {restaurant: this.restaurant};
-    this.dialog.open(ReviewDialogComponent, this.dialogConfig);
   }
 
   editRestaurant() {
