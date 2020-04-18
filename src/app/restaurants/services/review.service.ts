@@ -39,7 +39,17 @@ export class ReviewService {
                ).toPromise();
   }
 
-  getReviews(restaurantId: string, query: ReviewsQueryParams) {
+  getHighestLowest(restaurantId) {
+    this.http.get<{ reviews: Review[] }>(`${this.baseUrl}/${restaurantId}/reviews/highest-lowest`)
+        .pipe(
+          map(({reviews}) => {
+            this.reviews$.next(union(reviews, this.reviews$.value));
+          }),
+          catchError(this.errorHandler.onHttpError)
+        ).subscribe();
+  }
+
+  async getReviews(restaurantId: string, query: ReviewsQueryParams) {
 
     this.loaderService.show();
     const body = {limit: this.defaultLimit, lastReviewId: null, ...query};
@@ -48,17 +58,15 @@ export class ReviewService {
       body.lastReviewId = this.reviews$.value[this.reviews$.value.length - 1].id;
     } else {
       this.reviews$.next([]);
+      if (!body.filterName) {
+        this.getHighestLowest(restaurantId);
+      }
     }
 
     this.http.post<{ reviews: Review[] }>(`${this.baseUrl}/${restaurantId}/reviews/fetch`, body)
         .pipe(
           map(({reviews}) => {
-            if (query.isNext) {
-              this.reviews$.next([...this.reviews$.value, ...reviews]);
-            } else {
-              this.reviews$.next(reviews);
-            }
-
+            this.reviews$.next(union(this.reviews$.value, reviews));
             return reviews;
           }),
           catchError(this.errorHandler.onHttpError),
@@ -119,3 +127,9 @@ export class ReviewService {
                ).toPromise();
   }
 }
+
+function union(a: Array<Review>, b: Array<Review>) {
+  b = b.filter(rB => a.findIndex(rA => rA.id === rB.id) < 0);
+  return a.concat(b);
+}
+

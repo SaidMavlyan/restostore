@@ -4,35 +4,36 @@ service cloud.firestore {
     return isAuthenticated() && request.auth.token.role == 'admin';
   }
 
+  function isOwner() {
+    return isAuthenticated() && request.auth.token.role == 'owner';
+  }
+
   function isAuthenticated() {
     return request.auth.uid != null;
   }
 
   function createBySelf() {
-    return request.auth.uid == request.resource.data.uid;
-  }
-
-  function readBySelf() {
-    return request.auth.uid == resource.data.uid;
+    return request.auth.uid == request.resource.data.ownerId && isOwner();
   }
 
   function updateBySelf() {
-    return request.auth.uid == resource.data.uid && resource.data.uid == request.resource.data.uid;
+    return request.auth.uid == resource.data.ownerId && isOwner();
   }
 
   function deleteBySelf() {
-    return request.auth.uid == resource.data.uid;
+    return request.auth.uid == resource.data.ownerId && isOwner();
   }
 
   match /databases/{database}/documents {
 
     match /users/{uid} {
-      allow read, write: if request.auth.uid == uid;
+      allow read, write: if request.auth.uid == uid || isAdmin();
     }
 
     match /restaurants/{restaurant} {
       match /reviews/{review} {
-        allow read, write: if request.auth.uid == uid;
+        allow read;
+        allow write: if resource.data.userId == request.auth.uid || isAdmin();
       }
 
       allow read;

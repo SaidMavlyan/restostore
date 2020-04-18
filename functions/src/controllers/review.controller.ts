@@ -96,6 +96,37 @@ export async function getReviews(req: Request, res: Response) {
   }
 }
 
+export async function getHighestAndLowest(req: Request, res: Response) {
+  try {
+    const {restaurantId} = req.params;
+    const reviews = [];
+
+    const highestSnaps = await admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
+                                    .orderBy('rating', 'desc')
+                                    .orderBy('createdAt', 'desc').limit(1).get();
+
+    if (highestSnaps.docs.length) {
+      reviews.push(await mapReview(highestSnaps.docs[0], restaurantId));
+    }
+
+    const lowestSnaps = await admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
+                                   .orderBy('rating', 'asc')
+                                   .orderBy('createdAt', 'desc').limit(1).get();
+
+    if (lowestSnaps.docs.length && !highestSnaps.docs[0].isEqual(lowestSnaps.docs[0])) {
+      reviews.push(await mapReview(lowestSnaps.docs[0], restaurantId));
+    }
+
+    res.status(200);
+
+    return res.send({
+      reviews
+    });
+  } catch (err) {
+    return handleError(res, err);
+  }
+}
+
 export async function patchReview(req: Request, res: Response) {
   try {
     const {rating, comment, dateOfVisit} = req.body as Partial<Review>;

@@ -59,7 +59,7 @@ export class ReviewsComponent {
 
   loadReviews(reset = false) {
     const body = {
-      isNext: reset ? false : true,
+      isNext: reset || !this.reviewService.reviews$.value.length ? false : true,
       filterName: this.filterName,
       filterVal: null
     };
