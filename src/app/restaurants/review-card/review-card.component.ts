@@ -5,6 +5,8 @@ import { ReviewDeleteDialogComponent } from '../review-delete-dialog/review-dele
 import { ReviewReplyDialogComponent } from '../review-reply-dialog/review-reply-dialog.component';
 import { ReplyDeleteDialogComponent } from '../reply-delete-dialog/reply-delete-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { UserService } from '../../users/services/user.service';
+import { User } from '../../users/models/user';
 
 @Component({
   selector: 'app-review-card',
@@ -13,12 +15,19 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 })
 export class ReviewCardComponent implements OnInit {
 
-  dialogConfig = new MatDialogConfig();
   @Input() review: Review;
+  @Input() canReply = false;
 
-  constructor(private dialog: MatDialog
+  user: User;
+  dialogConfig = new MatDialogConfig();
+
+  constructor(private dialog: MatDialog,
+              private userService: UserService,
   ) {
     this.dialogConfig.width = '400px';
+    this.userService.currentUser$.subscribe(user => {
+      this.user = user;
+    });
   }
 
   ngOnInit(): void {

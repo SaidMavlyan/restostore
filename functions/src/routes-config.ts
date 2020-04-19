@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import { isAuthenticated } from './authenticated';
-import { isAuthorized } from './authorized';
+import { isAuthorized, isReviewAuthorized } from './authorized';
 import { create, get, getUsers, patch, remove, resetPassword } from './controllers/users.controller';
 import { Roles, UserManagerRoles } from './roles';
 import { createReview, deleteReview, getHighestAndLowest, getMyReview, getReviews, patchReview } from './controllers/review.controller';
@@ -15,13 +15,13 @@ export function routesConfig(app: Application) {
 function replyRoutes(app: Application) {
   app.post('/restaurants/:restaurantId/reviews/:reviewId/replies', [
     isAuthenticated,
-    isAuthorized({hasRole: [Roles.admin, Roles.owner]}),
+    isReviewAuthorized({hasRole: [Roles.admin, Roles.owner]}),
     setReply
   ]);
 
   app.delete('/restaurants/:restaurantId/reviews/:reviewId/replies', [
     isAuthenticated,
-    isAuthorized({hasRole: [Roles.admin, Roles.owner]}),
+    isReviewAuthorized({hasRole: [Roles.admin, Roles.owner]}),
     deleteReply
   ]);
 }
@@ -48,13 +48,13 @@ function reviewRoutes(app: Application) {
 
   app.patch('/restaurants/:restaurantId/reviews/:reviewId', [
     isAuthenticated,
-    isAuthorized({hasRole: [Roles.admin], allowSameUser: true}),
+    isReviewAuthorized({hasRole: [Roles.admin], allowSameUser: true}),
     patchReview
   ]);
 
   app.delete('/restaurants/:restaurantId/reviews/:reviewId', [
     isAuthenticated,
-    isAuthorized({hasRole: [Roles.admin], allowSameUser: true}),
+    isReviewAuthorized({hasRole: [Roles.admin], allowSameUser: true}),
     deleteReview
   ]);
 }

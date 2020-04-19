@@ -9,6 +9,8 @@ import { mergeMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
 import { placeholderImage } from '../../const/util';
 import { ReviewService } from '../services/review.service';
+import { UserService } from '../../users/services/user.service';
+import { User } from '../../users/models/user';
 
 @Component({
   selector: 'app-restaurant',
@@ -20,13 +22,18 @@ export class RestaurantComponent implements OnInit {
   restaurant: Restaurant;
   placeholder = placeholderImage;
   dialogConfig = new MatDialogConfig();
+  user: User;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private reviewService: ReviewService,
+              private userService: UserService,
               private dialog: MatDialog,
               private rs: RestaurantService) {
     this.dialogConfig.width = '400px';
+    this.userService.currentUser$.subscribe((user) => {
+      this.user = user;
+    });
   }
 
   ngOnInit(): void {

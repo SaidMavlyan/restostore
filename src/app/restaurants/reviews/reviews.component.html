@@ -1,4 +1,4 @@
-<div *ngIf="isAdmin || !isOwnedResto" class="my-review">
+<div *ngIf="user && !isOwnedResto" class="my-review">
   <div *ngIf="myReview; else writeReview">
     <mat-tab-group>
       <mat-tab label="My review"></mat-tab>
@@ -16,7 +16,7 @@
 
 <mat-tab-group (selectedTabChange)="tabChange($event)">
   <mat-tab label="All reviews"></mat-tab>
-  <mat-tab *ngIf="isOwnedResto || isAdmin">
+  <mat-tab *ngIf="isOwnedResto || user?.isAdmin">
     <ng-template matTabLabel>
     <span [matBadge]="restaurant.pendingReplies.toString()"
           [matBadgeHidden]="!restaurant.pendingReplies"
@@ -30,7 +30,7 @@
 <div class="reviews">
   <div *ngIf="(reviews$ | async).length; else noReviews">
     <div *ngFor="let review of (reviews$ | async)" class="review">
-      <app-review-card *ngIf="review.id != myReview?.id" [review]="review"></app-review-card>
+      <app-review-card [canReply]="isOwnedResto || user?.isAdmin" [review]="review"></app-review-card>
     </div>
   </div>
 

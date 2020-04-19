@@ -43,7 +43,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div *ngIf="canAdd">
+  <div *ngIf="user?.isAdmin || user?.isOwner">
     <button id="addBtn" mat-fab title="Add new Restaurant" color="primary" (click)="addRestaurant()">
       <mat-icon>add</mat-icon>
     </button>
@@ -56,8 +56,8 @@
     <div *ngFor="let restaurant of restaurants"
          fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
       <div class="resto-card" routerLink="/restaurants/{{restaurant.id}}">
-        <mat-card [matBadgeHidden]="!restaurant?.pendingReplies"
-                  [matBadge]="restaurant?.pendingReplies?.toString()"
+        <mat-card [matBadgeHidden]="user?.isAdmin || restaurant.ownerId != ownerId || !restaurant.pendingReplies"
+                  [matBadge]="restaurant.pendingReplies?.toString()"
                   matBadgeColor="warn"
                   matBadgeDescription="Comments without replies">
           <mat-card-content>

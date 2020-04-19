@@ -9,9 +9,13 @@
           <div>
             <h2>{{restaurant?.name}}</h2>
           </div>
-          <button [matMenuTriggerFor]="restoMenu" mat-icon-button>
-            <mat-icon>more_vert</mat-icon>
-          </button>
+
+          <div>
+            <button *ngIf="user?.isAdmin || user?.uid == restaurant.ownerId" [matMenuTriggerFor]="restoMenu"
+                    mat-icon-button>
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </div>
 
         </div>
         <div class="rating">

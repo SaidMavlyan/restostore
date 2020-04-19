@@ -7,6 +7,7 @@ import { Restaurant } from '../models/restaurant';
 import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { UserService } from '../../users/services/user.service';
+import { User } from '../../users/models/user';
 
 @Component({
   selector: 'app-reviews',
@@ -18,7 +19,7 @@ export class ReviewsComponent implements OnInit {
   @Input() restaurant: Restaurant;
 
   isOwnedResto: boolean;
-  isAdmin: boolean;
+  user: User;
   myReview: Review;
   reviews$: BehaviorSubject<Review[]>;
   dialogConfig = new MatDialogConfig();
@@ -35,10 +36,12 @@ export class ReviewsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getMyReview();
     this.userService.currentUser$.subscribe(user => {
-      this.isOwnedResto = user && user.uid === this.restaurant.ownerId;
-      this.isAdmin = user && user.isAdmin;
+      if (user) {
+        this.isOwnedResto = user.uid === this.restaurant.ownerId;
+        this.user = user;
+        this.getMyReview();
+      }
     });
   }
 

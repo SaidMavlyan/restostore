@@ -9,9 +9,11 @@
     <span>{{review?.user?.displayName}}</span>
   </div>
 
-  <button [matMenuTriggerFor]="reviewMenu" mat-icon-button>
-    <mat-icon>more_vert</mat-icon>
-  </button>
+  <div>
+    <button *ngIf="user?.isAdmin || review.userId == user?.uid" [matMenuTriggerFor]="reviewMenu" mat-icon-button>
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </div>
 </div>
 
 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
@@ -24,7 +26,7 @@
   <div class="faded date-of-visit">Visit date: {{review.dateOfVisit | date}}</div>
 </div>
 
-<div *ngIf="review.reply" class="reply">
+<div *ngIf="review.reply; else replyButton" class="reply">
   <div class="tip"></div>
   <div fxLayout="row" fxLayoutAlign="space-between center">
     <div class="reply-author">
@@ -39,6 +41,15 @@
   <div class="reply-text">{{review?.reply?.text}}</div>
 </div>
 
+<ng-template #replyButton>
+  <div *ngIf="canReply" fxLayout="row" fxLayoutAlign="end center">
+    <button (click)="setReply(review)" mat-flat-button>
+      <mat-icon>reply</mat-icon>
+      <span>Reply</span>
+    </button>
+  </div>
+</ng-template>
+
 <mat-menu #replyMenu="matMenu">
   <button (click)="setReply(review)" mat-menu-item>
     <span>Edit reply</span>
@@ -50,10 +61,6 @@
 </mat-menu>
 
 <mat-menu #reviewMenu="matMenu">
-  <button (click)="setReply(review)" *ngIf="!review.reply" mat-menu-item>
-    <span>Reply</span>
-  </button>
-
   <button (click)="editReview(review)" mat-menu-item>
     <span>Edit review</span>
   </button>

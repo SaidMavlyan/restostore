@@ -8,6 +8,7 @@ import { UserService } from '../../users/services/user.service';
 import { LoaderService } from '../../services/loader.service';
 import { placeholderImage } from '../../const/util';
 import { ActivatedRoute } from '@angular/router';
+import { User } from '../../users/models/user';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
 @Component({
@@ -22,12 +23,12 @@ export class RestaurantsComponent implements OnInit {
   ratingOptions = ['all', '0', '1', '2', '3', '4', '5'];
   sort: OrderByDirection = 'desc';
   ratingFilter = this.ratingOptions[0];
-  canAdd = false;
   isLoading = false;
   placeholder = placeholderImage;
 
   filterLabel = 'Filter restaurants by rating';
-  private ownerId: string;
+  ownerId: string;
+  user: User;
 
   constructor(private db: AngularFirestore,
               private dialog: MatDialog,
@@ -53,11 +54,7 @@ export class RestaurantsComponent implements OnInit {
 
   ngOnInit() {
     this.userService.currentUser$.subscribe((user) => {
-      if (user) {
-        this.canAdd = user.isAdmin || user.isOwner;
-      } else {
-        this.canAdd = false;
-      }
+      this.user = user;
     });
   }
 
