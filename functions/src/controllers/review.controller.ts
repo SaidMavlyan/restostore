@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { handleError, validateRating, validateRequired } from '../utils';
+import { DATA_CONFLICT, handleError, validateRating, validateRequired } from '../utils';
 import * as admin from 'firebase-admin';
 import { Review } from '../interfaces/review';
 import { Restaurant } from '../interfaces/restaurant';
@@ -17,6 +17,14 @@ export async function createReview(req: Request, res: Response) {
 
     const restaurantRef = admin.firestore().doc(`restaurants/${restaurantId}`);
     const reviewRef = restaurantRef.collection(`reviews`).doc();
+
+    const checkSnaps = await admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
+                                  .where('userId', '==', uid)
+                                  .get();
+
+    if (checkSnaps.size) {
+      throw {name: DATA_CONFLICT, message: 'You already added review'};
+    }
 
     // todo: can be moved to cloud functions if execution time is long
     await admin.firestore().runTransaction(transaction => {
@@ -103,12 +111,12 @@ export async function getMyReview(req: Request, res: Response) {
 
     let review = null;
 
-    const highestSnaps = await admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
-                                    .where('userId', '==', uid)
-                                    .limit(1).get();
+    const reviewSnaps = await admin.firestore().collection(`restaurants/${restaurantId}/reviews`)
+                                   .where('userId', '==', uid)
+                                   .limit(1).get();
 
-    if (highestSnaps.docs.length) {
-      review = await mapReview(highestSnaps.docs[0], restaurantId);
+    if (reviewSnaps.docs.length) {
+      review = await mapReview(reviewSnaps.docs[0], restaurantId);
     }
 
     res.status(200);

@@ -53,15 +53,19 @@ export async function createTestUser(role: string = 'user'): Promise<RestUser> {
   }
 }
 
-const DATA_VALIDATION_ERROR = 'DataValidationError';
+export const DATA_VALIDATION_ERROR = 'DataValidationError';
+export const DATA_CONFLICT = 'DataConflict';
 
 export function handleError(res: Response, err: any) {
-  if (err.name === DATA_VALIDATION_ERROR) {
+  if (err.name === DATA_CONFLICT) {
+    res.status(409);
+    return res.send({message: `${err.message}`});
+  } else if (err.name === DATA_VALIDATION_ERROR) {
     res.status(400);
     return res.send({message: `${err.message}`});
   } else {
     res.status(500);
-    return res.send({message: `${err.code} - ${err.message}`});
+    return res.send({message: `${err.message}`});
   }
 }
 

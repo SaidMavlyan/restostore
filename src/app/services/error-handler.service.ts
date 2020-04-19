@@ -12,14 +12,17 @@ export class ErrorHandlerService {
   }
 
   onHttpError = (error: HttpErrorResponse) => {
+    let msg = null;
     if (error.error instanceof ErrorEvent) {
       console.error('An error occurred:', error.error.message);
+    } else if (error.error && error.error.message) {
+      msg = error.error.message;
     } else if (error.status && error.statusText) {
-      const msg = `Backend returned ${error.status}: ${error.error?.message || error.statusText}`;
-      this.notifierService.error(msg);
+      msg = `Backend returned ${error.status}: ${error.error?.message || error.statusText}`;
     } else {
-      this.notifierService.error(String(error));
+      msg = String(error);
     }
-    return throwError('Server error; please try again later.');
+
+    return throwError(msg ? msg : 'Server error; please try again later.');
   }
 }
