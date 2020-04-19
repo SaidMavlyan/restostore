@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RestaurantsComponent } from './restaurants/restaurants.component';
 import { RestaurantComponent } from './restaurant/restaurant.component';
+import { RestoOwnerResolverService } from './services/resto-owner.resolver.service';
 
 const routes: Routes = [
   {
@@ -9,7 +10,14 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: RestaurantsComponent
+        component: RestaurantsComponent,
+      },
+      {
+        path: 'my-restaurants',
+        component: RestaurantsComponent,
+        resolve: {
+          ownerId: RestoOwnerResolverService
+        }
       },
       {
         path: 'restaurants/:id',

@@ -4,10 +4,10 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RestaurantDialogComponent } from '../restaurant-dialog/restaurant-dialog.component';
 import { RestaurantService } from '../services/restaurant.service';
 import { Restaurant } from '../models/restaurant';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { UserService } from '../../users/services/user.service';
 import { LoaderService } from '../../services/loader.service';
 import { placeholderImage } from '../../const/util';
+import { ActivatedRoute } from '@angular/router';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
 @Component({
@@ -27,13 +27,19 @@ export class RestaurantsComponent implements OnInit {
   placeholder = placeholderImage;
 
   filterLabel = 'Filter restaurants by rating';
+  private ownerId: string;
 
   constructor(private db: AngularFirestore,
               private dialog: MatDialog,
+              private route: ActivatedRoute,
               private userService: UserService,
               private loaderService: LoaderService,
-              private afAuth: AngularFireAuth,
               private rs: RestaurantService) {
+    this.route.data
+        .subscribe((data: { ownerId: string }) => {
+          this.ownerId = data.ownerId;
+        });
+
     if (this.rs.lastQuery.sort) {
       this.sort = this.rs.lastQuery.sort;
     }
@@ -81,7 +87,7 @@ export class RestaurantsComponent implements OnInit {
     this.isLoading = true;
     const isReset = reset || !this.restaurants.length;
 
-    this.rs.loadRestaurants({isReset, sort: this.sort, rating: Number(this.ratingFilter)}).subscribe(res => {
+    this.rs.loadRestaurants({isReset, sort: this.sort, rating: Number(this.ratingFilter), ownerId: this.ownerId}).subscribe(res => {
       if (isReset) {
         this.restaurants = res;
       } else {

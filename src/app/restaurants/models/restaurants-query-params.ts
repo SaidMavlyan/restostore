@@ -5,4 +5,5 @@ export interface RestaurantsQueryParams {
   limit?: number;
   sort?: OrderByDirection;
   rating?: number;
+  ownerId?: string;
 }

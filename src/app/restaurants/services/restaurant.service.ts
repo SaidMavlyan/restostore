@@ -24,7 +24,14 @@ export class RestaurantService {
     this.defaultLimit = Math.ceil(window.innerHeight / 50); // Calculating min number of restos to fill the entire screen
   }
 
-  loadRestaurants({isReset = false, limit = this.defaultLimit, sort = 'desc', rating}: RestaurantsQueryParams): Observable<Restaurant[]> {
+  loadRestaurants(
+    {
+      isReset = false,
+      limit = this.defaultLimit,
+      sort = 'desc',
+      rating,
+      ownerId
+    }: RestaurantsQueryParams): Observable<Restaurant[]> {
     this.loaderService.show();
     this.lastQuery = arguments[0];
     if (isReset) {
@@ -39,6 +46,10 @@ export class RestaurantService {
         if (rating >= 0 && rating <= 5) {
           res = res.where('avgRating', '>=', rating)
                    .where('avgRating', '<', rating + 1);
+        }
+
+        if (ownerId) {
+          res = res.where('ownerId', '==', ownerId);
         }
 
         if (this.lastSnap) {
