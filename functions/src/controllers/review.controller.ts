@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
-import { DATA_CONFLICT, handleError, validateRating, validateRequired } from '../utils';
+import { DATA_CONFLICT, FORBIDDEN, handleError, validateRating, validateRequired } from '../utils';
 import * as admin from 'firebase-admin';
 import { Review } from '../interfaces/review';
 import { Restaurant } from '../interfaces/restaurant';
 import DocumentSnapshot = admin.firestore.DocumentSnapshot;
+
+const DEFAULT_LIMIT_PER_PAGE = 10;
 
 export async function createReview(req: Request, res: Response) {
   try {
@@ -29,16 +31,20 @@ export async function createReview(req: Request, res: Response) {
     // todo: can be moved to cloud functions if execution time is long
     await admin.firestore().runTransaction(transaction => {
       return transaction.get(restaurantRef).then(doc => {
-        const data = doc.data() as Restaurant;
+        const restaurant = doc.data() as Restaurant;
+
+        if (restaurant.ownerId === uid) {
+          throw {name: FORBIDDEN, message: 'You can not rate your own restaurant'};
+        }
 
         const newAverage =
-          (data.numRatings * data.avgRating + rating) /
-          (data.numRatings + 1);
+          (restaurant.numRatings * restaurant.avgRating + rating) /
+          (restaurant.numRatings + 1);
 
-        const pendingReplies = data.pendingReplies ? data.pendingReplies + 1 : 1;
+        const pendingReplies = restaurant.pendingReplies ? restaurant.pendingReplies + 1 : 1;
 
         transaction.update(restaurantRef, {
-          numRatings: data.numRatings + 1,
+          numRatings: restaurant.numRatings + 1,
           pendingReplies,
           avgRating: newAverage
         });
@@ -64,8 +70,6 @@ export async function createReview(req: Request, res: Response) {
     return handleError(res, err);
   }
 }
-
-const DEFAULT_LIMIT_PER_PAGE = 10;
 
 export async function getReviews(req: Request, res: Response) {
   try {

@@ -55,18 +55,29 @@ export async function createTestUser(role: string = 'user'): Promise<RestUser> {
 
 export const DATA_VALIDATION_ERROR = 'DataValidationError';
 export const DATA_CONFLICT = 'DataConflict';
+export const FORBIDDEN = 'Forbidden';
 
 export function handleError(res: Response, err: any) {
-  if (err.name === DATA_CONFLICT) {
-    res.status(409);
-    return res.send({message: `${err.message}`});
-  } else if (err.name === DATA_VALIDATION_ERROR) {
-    res.status(400);
-    return res.send({message: `${err.message}`});
-  } else {
-    res.status(500);
-    return res.send({message: `${err.message}`});
+  let status = 500;
+
+  if (err.name) {
+    switch (err.name) {
+      case DATA_VALIDATION_ERROR:
+        status = 400;
+        break;
+      case FORBIDDEN:
+        status = 403;
+        break;
+      case DATA_CONFLICT:
+        status = 409;
+        break;
+      default:
+        status = 500;
+    }
   }
+
+  res.status(status);
+  return res.send({message: `${err.message}`});
 }
 
 export function validateRating(rating: number) {

@@ -1,9 +1,9 @@
 <div class="my-review">
-  <div>
+  <div *ngIf="myReview; else writeReview">
     <mat-tab-group>
       <mat-tab label="My review"></mat-tab>
     </mat-tab-group>
-    <app-review-card *ngIf="myReview; else writeReview" [review]="myReview"></app-review-card>
+    <app-review-card [review]="myReview"></app-review-card>
   </div>
 
   <ng-template #writeReview>
