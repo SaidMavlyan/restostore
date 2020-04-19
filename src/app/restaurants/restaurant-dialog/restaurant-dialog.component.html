@@ -28,7 +28,7 @@
     Close
   </button>
 
-  <button (click)="save(isEditing)"
+  <button (click)="save()"
           [disabled]="form.invalid || isSaving"
           class="mat-raised-button mat-primary">
     {{isEditing ? "Update" : "Create"}}

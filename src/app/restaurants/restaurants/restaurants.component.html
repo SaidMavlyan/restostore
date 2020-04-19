@@ -56,8 +56,8 @@
     <div *ngFor="let restaurant of restaurants"
          fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
       <div class="resto-card" routerLink="/restaurants/{{restaurant.id}}">
-        <mat-card [matBadgeHidden]="!restaurant.pendingReplies"
-                  [matBadge]="restaurant.pendingReplies.toString()"
+        <mat-card [matBadgeHidden]="!restaurant?.pendingReplies"
+                  [matBadge]="restaurant?.pendingReplies?.toString()"
                   matBadgeColor="warn"
                   matBadgeDescription="Comments without replies">
           <mat-card-content>

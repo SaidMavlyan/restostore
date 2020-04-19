@@ -24,6 +24,18 @@ service cloud.firestore {
     return request.auth.uid == resource.data.ownerId && isOwner();
   }
 
+  function validRestoFields() {
+    return !("avgRating" in request.writeFields)
+            && !("numRatings" in request.writeFields)
+            && !("pendingReplies" in request.writeFields);
+  }
+
+  function validInitRestoFields() {
+    return (request.resource.data.avgRating == 0)
+            && (request.resource.data.numRatings == 0)
+            && (request.resource.data.pendingReplies == 0);
+  }
+
   match /databases/{database}/documents {
 
     match /users/{uid} {
@@ -36,8 +48,8 @@ service cloud.firestore {
       }
 
       allow read;
-      allow create: if createBySelf() || isAdmin();
-      allow update: if updateBySelf() || isAdmin();
+      allow create: if (createBySelf() || isAdmin()) && validInitRestoFields();
+      allow update: if (updateBySelf() || isAdmin()) && validRestoFields();
       allow delete: if deleteBySelf() || isAdmin();
     }
   }

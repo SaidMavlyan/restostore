@@ -62,33 +62,29 @@ export class RestaurantDialogComponent implements OnInit {
     this.file = event.target.files[0];
   }
 
-  async uploadPhoto(): Promise<string> {
+  async uploadPhoto(restoId: string): Promise<string> {
     const ownerId = this.form.get('ownerId').value;
-    const task = this.storage.upload(`restaurants/${ownerId}/resto_photo`, this.file);
+    const task = this.storage.upload(`restaurants/${ownerId}/${restoId}/resto_photo`, this.file);
 
     this.uploadPercent$ = task.percentageChanges();
     const finishedTask = await task;
     return await finishedTask.ref.getDownloadURL();
   }
 
-  async save(isEditing: boolean) {
+  async save() {
     this.isSaving = true;
 
     try {
 
-      let data;
+      let data = {...this.form.value};
+
+      const restoId = this.restaurant.id || await this.rs.create({...data, avgRating: 0, numRatings: 0, pendingReplies: 0});
 
       if (this.file) {
-        data = {...this.form.value, photo: await this.uploadPhoto()};
-      } else {
-        data = {...this.form.value};
+        data = {...data, photo: await this.uploadPhoto(restoId as string)};
       }
 
-      if (isEditing) {
-        await this.rs.update(this.restaurant.id, data);
-      } else {
-        await this.rs.create({...data, avgRating: 0, numRatings: 0, pendingReplies: 0});
-      }
+      await this.rs.update(restoId as string, data);
 
       this.close(true);
     } catch (e) {

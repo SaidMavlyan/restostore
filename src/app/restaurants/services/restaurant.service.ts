@@ -33,7 +33,8 @@ export class RestaurantService {
 
     return this.db.collection('restaurants',
       ref => {
-        let res = ref.orderBy('avgRating', sort as OrderByDirection);
+        let res = ref.orderBy('avgRating', sort as OrderByDirection)
+                     .orderBy('name', 'asc');
 
         if (rating >= 0 && rating <= 5) {
           res = res.where('avgRating', '>=', rating)
@@ -61,12 +62,12 @@ export class RestaurantService {
                );
   }
 
-  create(restaurant: Restaurant): Promise<void | Observable<never>> {
+  create(restaurant: Restaurant): Promise<string> {
     this.loaderService.show();
     return this.db.collection('restaurants').add(restaurant)
-               .then(() => {
+               .then((res) => {
+                 return res.id;
                })
-               .catch(this.errorHandler.onHttpError)
                .finally(() => {
                  this.loaderService.hide();
                });
@@ -79,19 +80,17 @@ export class RestaurantService {
     );
   }
 
-  update(id: string, restaurant: Partial<Restaurant>): Promise<void | Observable<never>> {
+  update(id: string, restaurant: Partial<Restaurant>): Promise<void> {
     this.loaderService.show();
     return this.db.doc(`restaurants/${id}`).update(restaurant)
-               .catch(this.errorHandler.onHttpError)
                .finally(() => {
                  this.loaderService.hide();
                });
   }
 
-  delete(restaurant: Restaurant): Promise<void | Observable<never>> {
+  delete(restaurant: Restaurant): Promise<void> {
     this.loaderService.show();
     return this.db.doc(`restaurants/${restaurant.id}`).delete()
-               .catch(this.errorHandler.onHttpError)
                .finally(() => {
                  this.loaderService.hide();
                });
