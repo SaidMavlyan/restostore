@@ -28,7 +28,7 @@
   <div class="tip"></div>
   <div fxLayout="row" fxLayoutAlign="space-between center">
     <div class="reply-author">
-      <span class="name">Resto owner's name</span>
+      <span class="name">{{review.reply?.user?.displayName}}</span>
       <span class="faded">{{review.reply.createdAt._seconds * 1000 | date }}</span>
     </div>
     <button [matMenuTriggerFor]="replyMenu" mat-icon-button>

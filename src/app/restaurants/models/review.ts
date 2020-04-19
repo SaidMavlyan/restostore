@@ -2,7 +2,8 @@ import { User } from '../../users/models/user';
 
 export interface Reply {
   text: string;
-  authorId: string;
+  userId: string;
+  user?: User;
   createdAt: {
     _seconds: number
   };

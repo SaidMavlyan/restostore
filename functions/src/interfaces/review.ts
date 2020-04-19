@@ -1,7 +1,11 @@
+import { User } from './user';
+
 export interface Reply {
   text: string;
-  authorId: string;
+  userId: string;
+  user?: User;
   createdAt: any;
+  modifiedAt?: any;
 }
 
 export interface Review {

@@ -32,8 +32,7 @@ service cloud.firestore {
 
     match /restaurants/{restaurant} {
       match /reviews/{review} {
-        allow read;
-        allow write: if resource.data.userId == request.auth.uid || isAdmin();
+        allow read, write: if false;
       }
 
       allow read;

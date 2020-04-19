@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import { handleError, validateRequired } from '../utils';
+import { FORBIDDEN, handleError, validateRequired } from '../utils';
 import * as admin from 'firebase-admin';
 import { Reply, Review } from '../interfaces/review';
 import { Restaurant } from '../interfaces/restaurant';
 import { Roles } from '../roles';
+import { User } from '../interfaces/user';
 
 export async function setReply(req: Request, res: Response) {
   try {
@@ -25,26 +26,38 @@ export async function setReply(req: Request, res: Response) {
       const review = revSnap.data() as Review;
 
       if (role !== Roles.admin && restaurant.ownerId !== uid) {
-        throw {name: 'Auth', message: 'Unauthorized to reply'};
-      }
-
-      if (!review.reply) {
-        transaction.update(restaurantRef, {
-          pendingReplies: restaurant.pendingReplies - 1
-        });
+        throw {name: FORBIDDEN, message: 'Unauthorized to reply'};
       }
 
       reply = {
         text,
-        authorId: uid,
+        userId: uid,
         createdAt: new Date()
       };
+
+      if (review.reply) {
+
+        reply.createdAt = review.reply.createdAt;
+        reply.modifiedAt = new Date();
+
+      } else {
+
+        transaction.update(restaurantRef, {
+          pendingReplies: restaurant.pendingReplies - 1
+        });
+
+      }
 
       return transaction.update(reviewRef, {reply});
     });
 
+    let updatedReply = ((await reviewRef.get()).data() as Review).reply;
+    const replyAuthorSnap = await admin.firestore().doc(`users/${updatedReply.userId}`).get();
+    const replyAuthor = replyAuthorSnap.data() as User;
+    updatedReply = {...updatedReply, user: replyAuthor};
+
     res.status(201);
-    return res.send(reply);
+    return res.send(updatedReply);
   } catch (err) {
     return handleError(res, err);
   }

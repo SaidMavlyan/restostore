@@ -28,9 +28,10 @@
 
 <div class="reviews">
   <div *ngFor="let review of (reviews$ | async)" class="review">
-    <app-review-card *ngIf="review.id != myReview.id" [review]="review"></app-review-card>
+    <app-review-card *ngIf="review.id != myReview?.id" [review]="review"></app-review-card>
   </div>
 
   <app-infinite-scroll (scrolled)="loadReviews()" [options]="{rootMargin: '100px'}">
   </app-infinite-scroll>
+
 </div>

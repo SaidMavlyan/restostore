@@ -3,6 +3,7 @@ import { DATA_CONFLICT, FORBIDDEN, handleError, validateRating, validateRequired
 import * as admin from 'firebase-admin';
 import { Review } from '../interfaces/review';
 import { Restaurant } from '../interfaces/restaurant';
+import { User } from '../interfaces/user';
 import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 
 const DEFAULT_LIMIT_PER_PAGE = 10;
@@ -245,6 +246,12 @@ async function mapReview(doc: DocumentSnapshot, restaurantId: string) {
   const review = doc.data() as Review;
   const userSnap = await admin.firestore().doc(`users/${review.userId}`).get();
   const user = userSnap.data();
+
+  if (review.reply && review.reply.userId) {
+    const replyAuthorSnap = await admin.firestore().doc(`users/${review.reply.userId}`).get();
+    const replyAuthor = replyAuthorSnap.data() as User;
+    review.reply = {...review.reply, user: replyAuthor};
+  }
 
   return {
     restaurantId,
