@@ -1,13 +1,13 @@
 <div *ngIf="user && !isOwnedResto" class="my-review">
-  <div *ngIf="myReview; else writeReview">
+  <div *ngIf="myReview$ | async ; else writeReview">
     <mat-tab-group>
       <mat-tab label="My review"></mat-tab>
     </mat-tab-group>
-    <app-review-card [review]="myReview"></app-review-card>
+    <app-review-card [review]="myReview$ | async"></app-review-card>
   </div>
 
   <ng-template #writeReview>
-    <button (click)="addReview()" color="primary" mat-flat-button>
+    <button (click)="addReview()" *ngIf="!(myReview$ | async)" color="primary" mat-flat-button>
       <mat-icon>create</mat-icon>
       Write a review
     </button>

@@ -20,8 +20,8 @@ export class ReviewsComponent implements OnInit {
 
   isOwnedResto: boolean;
   user: User;
-  myReview: Review;
   reviews$: BehaviorSubject<Review[]>;
+  myReview$: BehaviorSubject<Review>;
   dialogConfig = new MatDialogConfig();
 
   private filterName = null;
@@ -32,7 +32,9 @@ export class ReviewsComponent implements OnInit {
               private dialog: MatDialog) {
     this.dialogConfig.width = '400px';
     this.reviewService.reviews$.next([]);
+    this.reviewService.myReview$.next(null);
     this.reviews$ = this.reviewService.reviews$;
+    this.myReview$ = this.reviewService.myReview$;
   }
 
   ngOnInit() {
@@ -53,7 +55,7 @@ export class ReviewsComponent implements OnInit {
   }
 
   async getMyReview() {
-    this.myReview = await this.reviewService.getMyReview(this.restaurant.id);
+    await this.reviewService.getMyReview(this.restaurant.id);
   }
 
   addReview() {

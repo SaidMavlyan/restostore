@@ -15,6 +15,7 @@ import { ReviewsQueryParams } from '../models/reviews-query-params';
 export class ReviewService {
 
   reviews$ = new BehaviorSubject<Review[]>(null);
+  myReview$ = new BehaviorSubject<Review>(null);
 
   private baseUrl = `${environment.baseUrl}/api/restaurants`;
   private readonly defaultLimit: number;
@@ -31,6 +32,7 @@ export class ReviewService {
     return this.http.post<Review>(`${this.baseUrl}/${restaurantId}/reviews`, review)
                .pipe(
                  map(result => {
+                   this.myReview$.next(result);
                    this.reviews$.next([result, ...this.reviews$.value]);
                    return result;
                  }),
@@ -74,14 +76,26 @@ export class ReviewService {
                ).toPromise();
   }
 
+  handleOnUpdate(review: Review) {
+    const reviews = this.reviews$.value;
+    const indexInReviews = reviews.findIndex(r => r.id === review.id);
+
+    if (indexInReviews > -1) {
+      reviews.splice(indexInReviews, 1, review);
+      this.reviews$.next(reviews);
+    }
+
+    if (this.myReview$.value?.userId === review.userId) {
+      this.myReview$.next(review);
+    }
+  }
+
   updateReview(review: Partial<Review>) {
     this.loaderService.show();
     return this.http.patch<Review>(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}`, review)
                .pipe(
                  map(result => {
-                   const reviews = this.reviews$.value;
-                   reviews.splice(reviews.findIndex(r => r.id === review.id), 1, result);
-                   this.reviews$.next(reviews);
+                   this.handleOnUpdate(result);
                    return result;
                  }),
                  catchError(this.errorHandler.onHttpError),
@@ -89,11 +103,20 @@ export class ReviewService {
                ).toPromise();
   }
 
+  handleOnDelete(review: Review) {
+    const reviews = this.reviews$.value;
+    this.reviews$.next(reviews.filter(r => r.id !== review.id));
+
+    if (this.myReview$.value?.userId === review.userId) {
+      this.myReview$.next(null);
+    }
+  }
+
   deleteReview(review: Review) {
     this.loaderService.show();
     return this.http.delete(`${this.baseUrl}/${review.restaurantId}/reviews/${review.id}`).pipe(
       map(result => {
-        this.reviews$.next(this.reviews$.value.filter(r => r.id !== review.id));
+        this.handleOnDelete(review);
         return result;
       }),
       catchError(this.errorHandler.onHttpError),
@@ -107,6 +130,7 @@ export class ReviewService {
                .pipe(
                  map(result => {
                    review.reply = result;
+                   this.handleOnUpdate(review);
                    return result;
                  }),
                  catchError(this.errorHandler.onHttpError),
@@ -120,6 +144,7 @@ export class ReviewService {
                .pipe(
                  map(result => {
                    review.reply = null;
+                   this.handleOnUpdate(review);
                    return result;
                  }),
                  catchError(this.errorHandler.onHttpError),
@@ -130,7 +155,10 @@ export class ReviewService {
   async getMyReview(restaurantId): Promise<Review> {
     return this.http.get<{ review: Review }>(`${this.baseUrl}/${restaurantId}/reviews/mine`)
                .pipe(
-                 map(({review}) => review),
+                 map(({review}) => {
+                   this.myReview$.next(review);
+                   return review;
+                 }),
                  catchError(this.errorHandler.onHttpError)
                ).toPromise();
   }
