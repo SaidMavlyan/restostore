@@ -63,15 +63,15 @@ export class ReviewService {
       }
     }
 
-    this.http.post<{ reviews: Review[] }>(`${this.baseUrl}/${restaurantId}/reviews/fetch`, body)
-        .pipe(
-          map(({reviews}) => {
-            this.reviews$.next(union(this.reviews$.value, reviews));
-            return reviews;
-          }),
-          catchError(this.errorHandler.onHttpError),
-          finalize(() => this.loaderService.hide())
-        ).subscribe();
+    return this.http.post<{ reviews: Review[] }>(`${this.baseUrl}/${restaurantId}/reviews/fetch`, body)
+               .pipe(
+                 map(({reviews}) => {
+                   this.reviews$.next(union(this.reviews$.value, reviews));
+                   return reviews;
+                 }),
+                 catchError(this.errorHandler.onHttpError),
+                 finalize(() => this.loaderService.hide())
+               ).toPromise();
   }
 
   updateReview(review: Partial<Review>) {

@@ -1,4 +1,4 @@
-<div class="my-review">
+<div *ngIf="isAdmin || !isOwnedResto" class="my-review">
   <div *ngIf="myReview; else writeReview">
     <mat-tab-group>
       <mat-tab label="My review"></mat-tab>
@@ -16,9 +16,10 @@
 
 <mat-tab-group (selectedTabChange)="tabChange($event)">
   <mat-tab label="All reviews"></mat-tab>
-  <mat-tab>
+  <mat-tab *ngIf="isOwnedResto || isAdmin">
     <ng-template matTabLabel>
     <span [matBadge]="restaurant.pendingReplies.toString()"
+          [matBadgeHidden]="!restaurant.pendingReplies"
           matBadgeColor="warn"
           matBadgeOverlap="false"
     >Unanswered reviews</span>
@@ -27,9 +28,17 @@
 </mat-tab-group>
 
 <div class="reviews">
-  <div *ngFor="let review of (reviews$ | async)" class="review">
-    <app-review-card *ngIf="review.id != myReview?.id" [review]="review"></app-review-card>
+  <div *ngIf="(reviews$ | async).length; else noReviews">
+    <div *ngFor="let review of (reviews$ | async)" class="review">
+      <app-review-card *ngIf="review.id != myReview?.id" [review]="review"></app-review-card>
+    </div>
   </div>
+
+  <ng-template #noReviews>
+    <div *ngIf="!isLoading" class="no-reviews">
+      <div>No reviews</div>
+    </div>
+  </ng-template>
 
   <app-infinite-scroll (scrolled)="loadReviews()" [options]="{rootMargin: '100px'}">
   </app-infinite-scroll>

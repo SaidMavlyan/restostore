@@ -6,6 +6,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Restaurant } from '../models/restaurant';
 import { ReviewDialogComponent } from '../review-dialog/review-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { UserService } from '../../users/services/user.service';
 
 @Component({
   selector: 'app-reviews',
@@ -16,13 +17,17 @@ export class ReviewsComponent implements OnInit {
 
   @Input() restaurant: Restaurant;
 
+  isOwnedResto: boolean;
+  isAdmin: boolean;
   myReview: Review;
   reviews$: BehaviorSubject<Review[]>;
   dialogConfig = new MatDialogConfig();
 
   private filterName = null;
+  isLoading: boolean;
 
   constructor(private reviewService: ReviewService,
+              private userService: UserService,
               private dialog: MatDialog) {
     this.dialogConfig.width = '400px';
     this.reviewService.reviews$.next([]);
@@ -31,6 +36,10 @@ export class ReviewsComponent implements OnInit {
 
   ngOnInit() {
     this.getMyReview();
+    this.userService.currentUser$.subscribe(user => {
+      this.isOwnedResto = user && user.uid === this.restaurant.ownerId;
+      this.isAdmin = user && user.isAdmin;
+    });
   }
 
   tabChange($event: MatTabChangeEvent) {
@@ -51,12 +60,17 @@ export class ReviewsComponent implements OnInit {
   }
 
   loadReviews(reset = false) {
+    this.isLoading = true;
+
     const body = {
       isReset: reset || !this.reviewService.reviews$.value.length,
       filterName: this.filterName,
       filterVal: null
     };
 
-    this.reviewService.getReviews(this.restaurant.id, body);
+    this.reviewService.getReviews(this.restaurant.id, body).finally(() => {
+      this.isLoading = false;
+    });
+
   }
 }
