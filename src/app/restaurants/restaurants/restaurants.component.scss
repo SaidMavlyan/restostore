@@ -27,25 +27,30 @@
   }
 }
 
-.resto-card:hover {
-  cursor: pointer;
+#addBtn {
+  margin-left: 20px;
+  margin-top: -20px;
+}
+
+.container {
+  margin-right: -25px;
 }
 
 mat-card {
-  margin-bottom: 20%;
+  margin-bottom: 42px;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 8px 8px 8px rgba(0, 0, 0, .1), 0 8px 8px 0 rgba(0, 0, 0, .1), 0 8px 8px 0 rgba(0, 0, 0, .1) !important;
+    transition: background .4s cubic-bezier(.25, .8, .25, 1), box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
+  }
 
   img {
     object-fit: cover;
-    max-height: 222px;
   }
 }
 
 .no-resto {
   text-align: center;
   margin-top: 100px;
-}
-
-#addBtn {
-  margin-left: 20px;
-  margin-top: -20px;
 }

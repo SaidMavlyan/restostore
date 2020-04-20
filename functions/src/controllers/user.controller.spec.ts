@@ -8,7 +8,7 @@ import { Roles } from '../roles';
 import { signIn } from '../utils';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
-describe.skip('user.controller.ts', async function() {
+describe('user.controller.ts', async function() {
   let req: Partial<Request>;
   let res: Partial<Response>;
   const email = 'testEmail@example.com';

@@ -1,13 +1,5 @@
-mat-card {
-  margin: 20px 0;
-  min-width: 30vw;
-}
-
-.role-chip {
-  min-width: 100px;
-  @media (max-width: 600px) {
-    min-width: 0;
-  }
+table {
+  margin-top: 42px;
 }
 
 table, mat-paginator {

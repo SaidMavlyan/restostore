@@ -50,33 +50,35 @@
   </div>
 </div>
 
-<div class="container" fxLayout="row wrap" fxLayoutAlign="space-evenly stretch">
 
-  <ng-container *ngIf="restaurants.length; else noRestaurants">
-    <div *ngFor="let restaurant of restaurants"
-         fxFlex="30" fxFlex.lt-md="45" fxFlex.xs="100">
-      <div class="resto-card" routerLink="/restaurants/{{restaurant.id}}">
-        <mat-card [matBadgeHidden]="user?.isAdmin || restaurant.ownerId != ownerId || !restaurant.pendingReplies"
-                  [matBadge]="restaurant.pendingReplies?.toString()"
-                  matBadgeColor="warn"
-                  matBadgeDescription="Comments without replies">
-          <mat-card-content>
-            <img [src]="restaurant?.photo || placeholder" alt="Image of {{restaurant.name}}" mat-card-image>
-            <div>
-              <div class="details">
-                <h2>{{restaurant.name}}</h2>
-                <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
+<div *ngIf="restaurants.length; else noRestaurants" class="container"
+     fxLayout="row wrap" fxLayoutAlign="start stretch" fxLayoutGap="25px">
+  <ng-container *ngFor="let restaurant of restaurants">
+    <mat-card [matBadgeHidden]="user?.isAdmin || restaurant.ownerId != ownerId || !restaurant.pendingReplies"
+              [matBadge]="restaurant.pendingReplies?.toString()"
+              fxFlex="0 1 calc(33% - 25px)"
+              fxFlex.lt-md="0 1 calc(50% - 25px)"
+              fxFlex.xs="100"
+              fxLayout="column"
+              matBadgeColor="warn"
+              matBadgeDescription="Comments without replies"
+              routerLink="/restaurants/{{restaurant.id}}">
+      <mat-card-content fxFlex>
+        <img [src]="restaurant?.photo || placeholder" alt="Image of {{restaurant.name}}" mat-card-image>
+      </mat-card-content>
+      <div fxFlexAlign="end end">
+        <div class="details">
+          <h2>{{restaurant.name}}</h2>
+          <app-rating-stars [rating]="restaurant.avgRating"></app-rating-stars>
+        </div>
       </div>
-    </div>
+    </mat-card>
   </ng-container>
-  <app-infinite-scroll (scrolled)="loadRestaurants()" [options]="{rootMargin: '100px'}">
-  </app-infinite-scroll>
-
-  <ng-template #noRestaurants>
-    <div *ngIf="!isLoading" class="no-resto" fxFlexFill>No restaurants. Try to change filter parameters.</div>
-  </ng-template>
 </div>
+
+<app-infinite-scroll (scrolled)="loadRestaurants()" [options]="{rootMargin: '100px'}">
+</app-infinite-scroll>
+
+<ng-template #noRestaurants>
+  <div *ngIf="!isLoading" class="no-resto" fxFlexFill>No restaurants. Try to change filter parameters.</div>
+</ng-template>
