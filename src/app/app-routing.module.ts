@@ -3,13 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ProfileSettingsComponent } from './components/profile/profile-settings.component';
-import { AngularFireAuthGuard, customClaims, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
+import { AngularFireAuthGuard, customClaims, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Roles } from './const/roles';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
-const redirectLoggedInToHome = () => redirectLoggedInTo(['']);
 const isAdmin = () => {
   return pipe(customClaims, map(claims => claims.role === Roles.admin));
 };
@@ -37,8 +36,7 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent,
-    canActivate: [AngularFireAuthGuard], data: {authGuardPipe: redirectLoggedInToHome}
+    component: LoginComponent
   },
   {
     path: '**',

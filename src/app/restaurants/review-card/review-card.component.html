@@ -28,7 +28,8 @@
       <span class="name">{{review.reply?.user?.displayName}}</span>
       <span class="faded">{{review.reply.createdAt._seconds * 1000 | date }}</span>
     </div>
-    <button [matMenuTriggerFor]="replyMenu" mat-icon-button>
+
+    <button *ngIf="canReply" [matMenuTriggerFor]="replyMenu" mat-icon-button>
       <mat-icon>more_vert</mat-icon>
     </button>
   </div>

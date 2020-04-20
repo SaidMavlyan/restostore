@@ -49,15 +49,18 @@ export const createdUser = functions
     }
   });
 
-export const userDeleted = functions.auth.user().onDelete(async (user: admin.auth.UserRecord) => {
+export const deletedUser = functions.auth.user().onDelete(async (user: admin.auth.UserRecord) => {
   try {
     console.log('Deleting data related to user: ', user);
+    console.log('Revoking refresh tokens', user);
+    await admin.auth().revokeRefreshTokens(user.uid);
+
     console.log('Deleting restaurants >');
     const restoSnaps = await db.collection(`restaurants`)
-                               .where('uid', '==', user.uid)
+                               .where('ownerId', '==', user.uid)
                                .get();
 
-    await Promise.all(restoSnaps.docs.map(doc => db.doc(`restaurants/${doc.id}`).delete()));
+    await Promise.all(restoSnaps.docs.map(doc => doc.ref.delete()));
 
     console.log('Deleting reviews >');
     await deleteUserReviews(user.uid);
@@ -67,7 +70,24 @@ export const userDeleted = functions.auth.user().onDelete(async (user: admin.aut
   }
 });
 
+export const deletedRestuarant = functions
+  .firestore.document('restaurants/{restuarantId}')
+  .onDelete(async (resSnap) => {
+      try {
+        console.log('Deleting reviews for resto:', resSnap.id);
+        const reviewSnaps = await resSnap.ref.collection('reviews').get();
+        await Promise.all(reviewSnaps.docs.map(revSnap => revSnap.ref.delete()));
+
+
+        // todo: remove storage photo
+      } catch (e) {
+        console.log('Failed on review deletion', e);
+      }
+    }
+  );
+
 async function deleteUserReviews(userId: string) {
+  console.log('Deleting reviews of user:', userId);
   const reviewSnaps = await db.collectionGroup(`reviews`)
                               .where('userId', '==', userId)
                               .get();
@@ -78,6 +98,7 @@ async function deleteUserReviews(userId: string) {
 }
 
 function deleteReview(revSnap: QueryDocumentSnapshot) {
+  console.log('Deleting review:', revSnap.id);
   admin.firestore().runTransaction(async transaction => {
     const reviewRef = revSnap.ref;
     const restaurantRef = reviewRef.parent.parent;

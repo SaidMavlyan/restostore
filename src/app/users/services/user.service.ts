@@ -82,7 +82,9 @@ export class UserService {
     this.loaderService.show();
     return this.http.get<{ user: User }>(`${this.baseUrl}/${id}`)
                .pipe(
-                 map(result => result.user),
+                 map(result => {
+                   return result.user;
+                 }),
                  catchError(this.errorHandler.onHttpError),
                  finalize(() => this.loaderService.hide())
                );

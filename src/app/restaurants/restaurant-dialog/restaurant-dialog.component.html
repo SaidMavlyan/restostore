@@ -3,13 +3,13 @@
 
   <mat-form-field>
     <input matInput
-           placeholder="Name"
+           placeholder="Restaurant name"
            required
            formControlName="name">
     <mat-error *ngIf="form.controls.name.invalid">{{getValidationMessage('name')}}</mat-error>
   </mat-form-field>
 
-  <div>
+  <div class="upload">
     <span>Image:</span>
 
     <input (change)="selectFile($event)" type="file">
