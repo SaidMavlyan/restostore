@@ -23,7 +23,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   dialogConfig = new MatDialogConfig();
   subscriptions: Subscription[] = [];
   currentUser: User;
-  displayedColumns: string[] = ['uid', 'displayName', 'email', 'role', 'actions'];
+  displayedColumns: string[] = ['displayName', 'email', 'role', 'actions'];
   dataSource = new MatTableDataSource<User>();
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;

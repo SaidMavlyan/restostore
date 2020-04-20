@@ -44,7 +44,7 @@
   </mat-form-field>
 
   <div *ngIf="user?.isAdmin || user?.isOwner">
-    <button id="addBtn" mat-fab title="Add new Restaurant" color="primary" (click)="addRestaurant()">
+    <button (click)="addRestaurant()" color="accent" id="addBtn" mat-fab title="Add new Restaurant">
       <mat-icon>add</mat-icon>
     </button>
   </div>

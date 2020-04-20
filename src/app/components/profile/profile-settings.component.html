@@ -5,7 +5,8 @@
     <mat-card-header fxLayout="column"
                      fxLayoutAlign="center center"
                      fxLayoutGap="10px">
-      <mat-card-title>{{currentUser?.displayName}}</mat-card-title>
+      <app-user-avatar [photoURL]="currentUser?.photoURL"></app-user-avatar>
+      <h2>{{currentUser?.displayName}}</h2>
       <mat-chip-list>
         <mat-chip>
           {{currentUser?.role?.toUpperCase()}}

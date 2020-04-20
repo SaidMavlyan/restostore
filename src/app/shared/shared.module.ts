@@ -31,6 +31,7 @@ import { PageTitleComponent } from './page-title/page-title.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatBadgeModule } from '@angular/material/badge';
 import { InfiniteScrollComponent } from './infinite-scroll/infinite-scroll.component';
+import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -47,6 +48,7 @@ export const MY_FORMATS = {
     PageTitleComponent,
     RatingStarsComponent,
     InfiniteScrollComponent,
+    UserAvatarComponent,
   ],
   imports: [
     MomentDateModule,
@@ -115,6 +117,7 @@ export const MY_FORMATS = {
     ReactiveFormsModule,
     FormsModule,
     InfiniteScrollComponent,
+    UserAvatarComponent,
   ],
   providers: [
     {
