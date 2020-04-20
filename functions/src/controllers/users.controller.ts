@@ -109,6 +109,7 @@ export async function patch(req: Request, res: Response) {
 export async function remove(req: Request, res: Response) {
   try {
     const {id} = req.params;
+    await admin.auth().revokeRefreshTokens(id);
     await admin.auth().deleteUser(id);
     await admin.firestore().doc(`users/${id}`).delete();
     res.status(204);

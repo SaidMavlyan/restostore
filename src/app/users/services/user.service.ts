@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LoaderService } from '../../services/loader.service';
 import { User } from '../models/user';
 import { Roles } from '../../const/roles';
+import { Router } from '@angular/router';
 
 export interface CreateUserRequest {
   displayName: string;
@@ -34,6 +35,7 @@ export class UserService {
 
   constructor(private http: HttpClient,
               private afAuth: AngularFireAuth,
+              private router: Router,
               private errorHandler: ErrorHandlerService,
               private loaderService: LoaderService) {
     this.afAuth.user.subscribe((user) => {
@@ -85,7 +87,15 @@ export class UserService {
                  map(result => {
                    return result.user;
                  }),
-                 catchError(this.errorHandler.onHttpError),
+                 catchError((e, _) => {
+                   if (e.status === 403) {
+                     this.afAuth.auth.signOut().then(() => {
+                       this.router.navigateByUrl('/login');
+                     });
+                   }
+
+                   return throwError(e);
+                 }),
                  finalize(() => this.loaderService.hide())
                );
   }

@@ -10,6 +10,7 @@ mat-card {
   }
 }
 
-table {
+table, mat-paginator {
   width: 100%;
+  max-width: 1000px;
 }

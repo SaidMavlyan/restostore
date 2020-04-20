@@ -257,7 +257,7 @@ async function mapReview(doc: DocumentSnapshot, restaurantId: string) {
     restaurantId,
     id: doc.id,
     user: {
-      uid: user.uid,
+      uid: user?.uid,
       displayName: user?.displayName,
       photoURL: user?.photoURL
     },

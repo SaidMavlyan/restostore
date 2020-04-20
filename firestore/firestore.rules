@@ -1,15 +1,15 @@
 rules_version = '2';
 service cloud.firestore {
   function isAdmin() {
-    return isAuthenticated() && request.auth.token.role == 'admin';
+    return request.auth.token.role == 'admin';
   }
 
   function isOwner() {
-    return isAuthenticated() && request.auth.token.role == 'owner';
+    return request.auth.token.role == 'owner';
   }
 
   function isAuthenticated() {
-    return request.auth.uid != null;
+    return (request.auth.uid != null) ;
   }
 
   function createBySelf() {
@@ -34,6 +34,10 @@ service cloud.firestore {
     return (request.resource.data.avgRating == 0)
             && (request.resource.data.numRatings == 0)
             && (request.resource.data.pendingReplies == 0);
+  }
+
+  function userExists() {
+   return exists(/databases/$(database)/documents/users/$(request.auth.uid));
   }
 
   match /databases/{database}/documents {

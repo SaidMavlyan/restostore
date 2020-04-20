@@ -1,35 +1,37 @@
-<app-page-title title="Settings"></app-page-title>
+<div fxLayout="column wrap" fxLayoutAlign="center center">
+  <app-page-title fxFlex.xs="100" title="Settings"></app-page-title>
 
-<div *ngIf="userService.currentUser$ | async as currentUser">
-  <mat-card>
-    <mat-card-header fxLayout="column"
-                     fxLayoutAlign="center center"
-                     fxLayoutGap="10px">
-      <app-user-avatar [photoURL]="currentUser?.photoURL"></app-user-avatar>
-      <h2>{{currentUser?.displayName}}</h2>
-      <mat-chip-list>
-        <mat-chip>
-          {{currentUser?.role?.toUpperCase()}}
-        </mat-chip>
-      </mat-chip-list>
-    </mat-card-header>
-    <mat-card-content fxLayout="column"
-                      fxLayoutAlign="center center"
-                      fxLayoutGap="10px">
-      <span>{{currentUser?.email}}</span>
-    </mat-card-content>
-    <mat-card-actions dir="rtl">
-      <button mat-button color="primary" (click)="edit(currentUser)">
-        Edit Profile
-      </button>
+  <div *ngIf="userService.currentUser$ | async as currentUser">
+    <mat-card fxFlex.xs="100">
+      <mat-card-header fxLayout="column"
+                       fxLayoutAlign="center center"
+                       fxLayoutGap="10px">
+        <app-user-avatar [photoURL]="currentUser?.photoURL"></app-user-avatar>
+        <h2>{{currentUser?.displayName}}</h2>
+        <mat-chip-list>
+          <mat-chip>
+            {{currentUser?.role?.toUpperCase()}}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-card-header>
+      <mat-card-content fxLayout="column"
+                        fxLayoutAlign="center center"
+                        fxLayoutGap="10px">
+        <span>{{currentUser?.email}}</span>
+      </mat-card-content>
+      <mat-card-actions dir="rtl">
+        <button (click)="edit(currentUser)" color="primary" mat-button>
+          Edit Profile
+        </button>
 
-      <button (click)="resetPassword(currentUser)" color="primary" mat-button>
-        Reset Password
-      </button>
+        <button (click)="resetPassword(currentUser)" color="primary" mat-button>
+          Reset Password
+        </button>
 
-      <button class="mat-raised-button mat-warn" (click)="delete(currentUser)">
-        Delete
-      </button>
-    </mat-card-actions>
-  </mat-card>
+        <button (click)="delete(currentUser)" class="mat-raised-button mat-warn">
+          Delete
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 </div>

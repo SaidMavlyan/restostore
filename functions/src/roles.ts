@@ -6,6 +6,4 @@ export const Roles = {
 
 export enum RoleLevel {user, owner, admin }
 
-export const UserManagerRoles = [
-  Roles.admin,
-];
+export const UserManagerRoles = [Roles.admin];
