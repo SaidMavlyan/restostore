@@ -15,8 +15,8 @@ const firebaseConfig = {
 export const environment = {
   production: false,
   firebase: firebaseConfig,
-  // baseUrl: 'https://us-central1-restostore-7.cloudfunctions.net',
-  baseUrl: 'http://localhost:5001/restostore-7/us-central1'
+  baseUrl: 'https://us-central1-restostore-7.cloudfunctions.net',
+  // baseUrl: 'http://localhost:5001/restostore-7/us-central1'
 };
 /*
  * For easier debugging in development mode, you can import the following file

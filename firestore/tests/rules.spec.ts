@@ -75,41 +75,41 @@ class UserTestsAsAdmin {
   }
 
   @test
-  async '* not create a user'() {
+  async '* create a user'() {
     const {db} = authToDB('admin');
     const user = generateUser();
 
-    await assertFails(db.collection(collections.users).add(user));
+    await assertSucceeds(db.collection(collections.users).add(user));
   }
 
   @test
-  async '* not read users'() {
+  async '* read users'() {
     const {db} = authToDB('admin');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
 
     await assertSucceeds(adminDB().doc(docPath).set(user));
-    await assertFails(db.collection(`${collections.users}`).get());
+    await assertSucceeds(db.collection(`${collections.users}`).get());
   }
 
   @test
-  async '* not read individual user'() {
+  async '* read individual user'() {
     const {db} = authToDB('admin');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
 
     await assertSucceeds(adminDB().doc(docPath).set(user));
-    await assertFails(db.doc(docPath).get());
+    await assertSucceeds(db.doc(docPath).get());
   }
 
   @test
-  async '* not update user'() {
+  async '* update user'() {
     const {db} = authToDB('admin');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
 
     await assertSucceeds(adminDB().doc(docPath).set(user));
-    await assertFails(db.doc(docPath).update({...user, randomField: Math.random().toString()}));
+    await assertSucceeds(db.doc(docPath).update({...user, randomField: Math.random().toString()}));
   }
 
   @test
@@ -119,18 +119,18 @@ class UserTestsAsAdmin {
     const docPath = `${collections.users}/${user.uid}`;
 
     await assertSucceeds(adminDB().doc(docPath).set(user));
-    await assertFails(db.doc(docPath).delete());
+    await assertSucceeds(db.doc(docPath).delete());
   }
 }
 
 @suite
 class UserTestsAsOwner {
   @test
-  async 'Owner can:'() {
+  async 'Owner can not:'() {
   }
 
   @test
-  async '* not create a user'() {
+  async '* create a user'() {
     const {db} = authToDB('owner');
     const user = generateUser();
 
@@ -138,7 +138,7 @@ class UserTestsAsOwner {
   }
 
   @test
-  async '* not read users'() {
+  async '* read users'() {
     const {db} = authToDB('owner');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
@@ -148,7 +148,7 @@ class UserTestsAsOwner {
   }
 
   @test
-  async '* not read individual user'() {
+  async '* read individual user'() {
     const {db} = authToDB('owner');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
@@ -158,7 +158,7 @@ class UserTestsAsOwner {
   }
 
   @test
-  async '* not update user'() {
+  async '* update user'() {
     const {db} = authToDB('owner');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
@@ -168,7 +168,7 @@ class UserTestsAsOwner {
   }
 
   @test
-  async '* not delete user'() {
+  async '* delete user'() {
     const {db} = authToDB('owner');
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
@@ -181,11 +181,11 @@ class UserTestsAsOwner {
 @suite
 class UserTestsAsUser {
   @test
-  async 'User can:'() {
+  async 'User can not:'() {
   }
 
   @test
-  async '* not create a user'() {
+  async '* create a user'() {
     const {db} = authToDB();
     const user = generateUser();
 
@@ -193,7 +193,7 @@ class UserTestsAsUser {
   }
 
   @test
-  async '* not read users'() {
+  async '* read users'() {
     const {db} = authToDB();
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
@@ -203,7 +203,7 @@ class UserTestsAsUser {
   }
 
   @test
-  async '* not read individual user'() {
+  async '* read individual user'() {
     const {db} = authToDB();
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
@@ -213,7 +213,7 @@ class UserTestsAsUser {
   }
 
   @test
-  async '* not update user'() {
+  async '* update user'() {
     const {db} = authToDB();
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
@@ -223,7 +223,7 @@ class UserTestsAsUser {
   }
 
   @test
-  async '* not delete user'() {
+  async '* delete user'() {
     const {db} = authToDB();
     const user = generateUser();
     const docPath = `${collections.users}/${user.uid}`;
